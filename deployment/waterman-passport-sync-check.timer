@@ -1,0 +1,9 @@
+# /etc/systemd/system/waterman-passport-sync-check.timer
+[Unit]
+Description=Verify morning passport synchronization at 08:00 Tomsk
+[Timer]
+OnCalendar=*-*-* 08:00,10,20:00 Asia/Tomsk
+AccuracySec=10s
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/waterman-passport-snapshot.timer
+[Unit]
+Description=Refresh passport analytics in the morning (Tomsk)
+[Timer]
+OnCalendar=*-*-* 06,07:00,30:00 Asia/Tomsk
+AccuracySec=10s
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+# /etc/systemd/system/waterman-passport-segment.timer
+[Unit]
+Description=Refresh derived passport segments
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=5min
+Persistent=true
+Unit=waterman-passport-segment.service
+[Install]
+WantedBy=timers.target

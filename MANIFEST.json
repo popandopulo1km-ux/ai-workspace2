@@ -1,0 +1,375 @@
+{
+  "capturedAt": "2026-10-23T06:18:14.413Z",
+  "verifiedAt": "2026-10-23T06:17:12.685Z",
+  "node": "v20.20.2",
+  "python": "3.12.3",
+  "sourceFilesUnchanged": true,
+  "unreadable": [
+    {
+      "path": "/opt/app/interactive-admin-new.html",
+      "error": "EACCES"
+    }
+  ],
+  "files": [
+    {
+      "path": "admin-service.mjs",
+      "bytes": 28004,
+      "sha256": "871ebdbbc716414fa0cd1e3ff6b8193d2dd7c0188c1778120638c1c7affa7dc4"
+    },
+    {
+      "path": "admin.html",
+      "bytes": 48452,
+      "sha256": "d0975b57b191e1efb73af2f9f4cddbf06c3b70a06b8bd21bde27acba3a2c9ef8"
+    },
+    {
+      "path": "bitrix/local/php_interface/init.php",
+      "bytes": 281,
+      "sha256": "03b595e642946a1e7ba5e791b1a718decb55c0bcf1079e5f6adbe05ae71ccd66"
+    },
+    {
+      "path": "bitrix/local/php_interface/wm-passport-guard.php",
+      "bytes": 7836,
+      "sha256": "a3c08fda6e1bd612549f0c7fee58b174c4011b47b090aa6585d485051cb14a00"
+    },
+    {
+      "path": "bitrix/local/php_interface/wm-passport-install.php",
+      "bytes": 8036,
+      "sha256": "41b355081bb37a6782c5ae2e857a2018bd196304544a1c4939e09829fa83b445"
+    },
+    {
+      "path": "bitrix/local/php_interface/wm-reanimator-date.php/wm-reanimator-date.php",
+      "bytes": 3960,
+      "sha256": "a52e3d84c2f3bee71b490b246edfa557ec65821e2975e347cf48098c0ec63932"
+    },
+    {
+      "path": "bitrix/local/tools/report_farmer.php",
+      "bytes": 121524,
+      "sha256": "29db48311f0c89a0490e2815144c323135b76e434c88e1fa53d4d5ab7d3452b7"
+    },
+    {
+      "path": "commercial-service.mjs",
+      "bytes": 8373,
+      "sha256": "fbbb3416bacc2fff887c14393c7b174f65a9249bea9d65c3195697dd52ff7211"
+    },
+    {
+      "path": "company-links.mjs",
+      "bytes": 3187,
+      "sha256": "4dc08ea1138c9a6559336c8ba4adb1a4b0581189b7e7b73bd3cb77e01e69420b"
+    },
+    {
+      "path": "comparison.mjs",
+      "bytes": 3157,
+      "sha256": "ae6accc032ba8987aa85f058e16c7609f9d4a839f5b78caf5afd8d7b70f4d6df"
+    },
+    {
+      "path": "contact-service.mjs",
+      "bytes": 15008,
+      "sha256": "4a6b8e02b8900fdba93febae9cf789dabc4b01bddda1b26ce171bc2ff749bacd"
+    },
+    {
+      "path": "contact.html",
+      "bytes": 52573,
+      "sha256": "fac51c885c116ce22624d7358339131fecdc41a6b6be3f390944a2c38d438874"
+    },
+    {
+      "path": "current-groups.mjs",
+      "bytes": 1510,
+      "sha256": "0822d578eaac251f61fc7a24bceb6436e29234f2be372dfa1b1dd4ead17b5cfc"
+    },
+    {
+      "path": "deployment/app.service",
+      "bytes": 580,
+      "sha256": "5d0e3802a52f7f1b22e8d785ced18849bad6fc3bc96c9d055ec662bdff3197cc"
+    },
+    {
+      "path": "deployment/waterman-passport-segment.service",
+      "bytes": 446,
+      "sha256": "04caef71a8d5af1b7be1043930ceeda62d86d181d7c77b1fa9103209885285a3"
+    },
+    {
+      "path": "deployment/waterman-passport-segment.timer",
+      "bytes": 241,
+      "sha256": "38e49099e4235c956df7c2b1fa13a3ed5f0350bc4f0f53d5a92e477c304867d3"
+    },
+    {
+      "path": "deployment/waterman-passport-snapshot.service",
+      "bytes": 514,
+      "sha256": "3027c012079dd6515f0d5257051009eb9fae35251e1dda368c426ce3fdfa1498"
+    },
+    {
+      "path": "deployment/waterman-passport-snapshot.timer",
+      "bytes": 240,
+      "sha256": "05640db4f80f4517d407f78d367ce9216a8e916761bad21c252e7382c66bbead"
+    },
+    {
+      "path": "deployment/waterman-passport-sync-check.service",
+      "bytes": 424,
+      "sha256": "0d78d5037150a1e448f4fe182065602b67480a56f5530b042df9b245a9921580"
+    },
+    {
+      "path": "deployment/waterman-passport-sync-check.timer",
+      "bytes": 247,
+      "sha256": "d159a10b1f95a52a6ae48d97b7c8670849d81842f1c4e3af3aedfa10a1f9779c"
+    },
+    {
+      "path": "excel-xlsx.mjs",
+      "bytes": 7130,
+      "sha256": "83602023fd803f1d2bc3941bcbcb28035a08eb862b2eeac4291968c9cb22a7cc"
+    },
+    {
+      "path": "extended-catalog.js",
+      "bytes": 136772,
+      "sha256": "dbc83331dd95f6aca21c1373523964d52f6b05113a0281c19f79d241d7ba2580"
+    },
+    {
+      "path": "extended-info-service.mjs",
+      "bytes": 6071,
+      "sha256": "ff9b1a240f1076d11b3bb38ea726aa9e95fc62219b6d8dc89c6149ee1f5b14b2"
+    },
+    {
+      "path": "extended-info.js",
+      "bytes": 12259,
+      "sha256": "e49437c282025741f88d81ef180f826d42503e7e9f8240b22fc938f905325009"
+    },
+    {
+      "path": "group-comments.mjs",
+      "bytes": 4574,
+      "sha256": "71f96523229e2131ae2efbf4d5c1b88a89c0a9418b8be26eea2f121a49795480"
+    },
+    {
+      "path": "group-commercial.js",
+      "bytes": 5590,
+      "sha256": "51515f6e8356b7db96d53878fa6d7f6e5d39f6f4f4da7b4a04da5dd37f31a81c"
+    },
+    {
+      "path": "group-specialization-service.mjs",
+      "bytes": 6521,
+      "sha256": "82ea4a8f4b79a42e728c13d3021d0ba8fa4daa884b543236b8e07a6e44309ac3"
+    },
+    {
+      "path": "history-backend.mjs",
+      "bytes": 5728,
+      "sha256": "108f96ca3a51946a35db7b13046d4b53f6a5a9bd71b52098e56e368999afce63"
+    },
+    {
+      "path": "history.css",
+      "bytes": 9952,
+      "sha256": "6d36b34fbbc6f6f6a8d2869666ff1d7c116219b40c0487d92554a6baa8d4a6cf"
+    },
+    {
+      "path": "history.js",
+      "bytes": 27166,
+      "sha256": "f2366d253c7338dbcb75adb0a27c44bb0d67f0a69ac7f7453a204284c74e7faf"
+    },
+    {
+      "path": "holding-service.mjs",
+      "bytes": 5291,
+      "sha256": "d57b493d997b1a5c2ee9b8353101854a47378058f6fd94892cc5c140e13af8ad"
+    },
+    {
+      "path": "holding-ui.js",
+      "bytes": 5572,
+      "sha256": "f09aac181101d8d18eca0bd03ba6025dcf191132efbe62e26a7c40c6e952792d"
+    },
+    {
+      "path": "icon.svg",
+      "bytes": 565,
+      "sha256": "96472941d31a5b7c7a9b645157f19903881ef0b61b68318409ec9a0888129c32"
+    },
+    {
+      "path": "index.html",
+      "bytes": 120724,
+      "sha256": "68c19962e6a2d509d6ce1983438bcce9a5968494fe7166bbe748fe3318ced045"
+    },
+    {
+      "path": "interactive-app.js",
+      "bytes": 38783,
+      "sha256": "0988f65e1a388de20c59871f1a9fb056788f0dd83ec462afd28d603f90343c9a"
+    },
+    {
+      "path": "interactive-export.mjs",
+      "bytes": 15984,
+      "sha256": "165ea155b1be9c7a1c6ada34f2135bd4bad04bd9b8a3ff36754eb546106fb1cf"
+    },
+    {
+      "path": "interactive-periods.mjs",
+      "bytes": 5535,
+      "sha256": "a2c7cfdee1e2b860a27332172e993c5dd9e36572ba2ebde58967f8df90765406"
+    },
+    {
+      "path": "interactive-service.mjs",
+      "bytes": 3366,
+      "sha256": "a00afac407ffd51c03c28b3af0eae4ecf1554cb7c12d2428f7f8715a87ce33d3"
+    },
+    {
+      "path": "interactive.html",
+      "bytes": 2701,
+      "sha256": "7e8ba4ef8b059012cc42df65549284d075258c24860896202abcd53dfc02a488"
+    },
+    {
+      "path": "legacy-labels.json",
+      "bytes": 44218,
+      "sha256": "5f76bcf5680fc3f64b4683a29b079c3351a612bcc912902147491e4497f3b1d7"
+    },
+    {
+      "path": "package.json",
+      "bytes": 248,
+      "sha256": "f2065354eb702ed07e0e9019aa1e5200d48b4e908b2c49ee2aaadf886ed72ce3"
+    },
+    {
+      "path": "parent-service.mjs",
+      "bytes": 9818,
+      "sha256": "510a7047e79abb2874bb65abbef181e8ddca2bec1d7f536456795b96d6ef3928"
+    },
+    {
+      "path": "parent-ui.js",
+      "bytes": 18080,
+      "sha256": "d4786fc60897dbe829ee6b162e4ce23186377bd737aba06a6ddff0b0c8a9cd4f"
+    },
+    {
+      "path": "passport-completion.mjs",
+      "bytes": 931,
+      "sha256": "bcc6a2f8868a8f6de09c86c8da3fb02d2a00ecfb393858685a8a98ee2009c8ba"
+    },
+    {
+      "path": "passport-integrity.mjs",
+      "bytes": 6412,
+      "sha256": "01e08098be9169606dca5b5e05b2c1c73f35728472444d9b081adc81972707b1"
+    },
+    {
+      "path": "passport-patterns.mjs",
+      "bytes": 1169,
+      "sha256": "6d202cd8e3f5e883bd6a2c12629a40e5ec17352f0001f1011a17c8b2f2d4060c"
+    },
+    {
+      "path": "passport-segment.mjs",
+      "bytes": 742,
+      "sha256": "1c0b07b8dd31945ae978ce5caa859681a7ea6c4e4854cd29590f21aaf9037e45"
+    },
+    {
+      "path": "passport-snapshot.mjs",
+      "bytes": 10289,
+      "sha256": "c334bd05dc37857f6f9a07b01c746a1d6e625b67be5e621e6569998f490fc359"
+    },
+    {
+      "path": "passport-sync-check.mjs",
+      "bytes": 2638,
+      "sha256": "d062facc545f790689d98ad7778edd800620f899faff7032b750ee737f01c185"
+    },
+    {
+      "path": "patterns-core.mjs",
+      "bytes": 3266,
+      "sha256": "75c59597f632b7b14c4a0ef576a3dceaa07ebd5405092111d7822e55efa81428"
+    },
+    {
+      "path": "potential-math.mjs",
+      "bytes": 1161,
+      "sha256": "6674d603ecd65172e5c90f4e8a47f64eea4fdd8ec7f77b62e64ea34c9c9c63d7"
+    },
+    {
+      "path": "potential-reference.json",
+      "bytes": 5338,
+      "sha256": "3c40676a0979587b1b425f439ae95aa64139d2061a2fec46e44acc8fbfeed7ff"
+    },
+    {
+      "path": "purchase-history/crm_directory.py",
+      "bytes": 1699,
+      "sha256": "be10fbc1b7e992daad58536bf2a1ede7dad37aafd64c87b5619aa09ad2a48bcc"
+    },
+    {
+      "path": "purchase-history/history_service.py",
+      "bytes": 12940,
+      "sha256": "8c9983357d44f5beb9638fd1c14b030719e8ca81c770f6abf577fe0e6ae436ff"
+    },
+    {
+      "path": "purchase-history/identity.py",
+      "bytes": 1793,
+      "sha256": "9ded4f2d7e769e90a4d6b47b169461bca2107360f70e709ab6647e9efe495388"
+    },
+    {
+      "path": "purchase-history/metrics.py",
+      "bytes": 2538,
+      "sha256": "81cb16dc4492f846090e9ad894cc5185259a199b960cc69b86f4eef15de3c3cf"
+    },
+    {
+      "path": "purchase-history/partner_buyers.py",
+      "bytes": 4589,
+      "sha256": "7bd7c46d69f1f0776397c6d1054a44d89cc5db6a1866d7d5dea1ff3fcef411a9"
+    },
+    {
+      "path": "purchase-history/patterns_query.py",
+      "bytes": 8412,
+      "sha256": "3ccbb84f04b37fb62430c4be74aad05590cb08cbf4784fc15945a9715f794b26"
+    },
+    {
+      "path": "purchase-history/query.py",
+      "bytes": 1043,
+      "sha256": "bd5ae56d0aaccf58369480a44498f1bcdd06cfa38cd5653df536c2b70c2cd099"
+    },
+    {
+      "path": "purchase-mapping.json",
+      "bytes": 16694,
+      "sha256": "991a4690a15a27cd79fd3bd810683db02e784614043df9a45524a8cb26888a4a"
+    },
+    {
+      "path": "purchase-summary.css",
+      "bytes": 3371,
+      "sha256": "38e7157097623c5c991999b4f9a2c0945275847eb2be12da97cec96b33546fdd"
+    },
+    {
+      "path": "purchase-summary.mjs",
+      "bytes": 10534,
+      "sha256": "71787cff579255edd5b8d3183932e7c5d4b0f5951e0d643c25e4671eedbe717c"
+    },
+    {
+      "path": "report-boilers.mjs",
+      "bytes": 1547,
+      "sha256": "6af5f17444227b1f6b50ecc72030e574633c30ce1fef222bc2ff023e92091288"
+    },
+    {
+      "path": "report-bridge.js",
+      "bytes": 1990,
+      "sha256": "a1daac54fce5c19df16b614b579f96611dc3f945a462705b01037ee40aea0963"
+    },
+    {
+      "path": "report-data.mjs",
+      "bytes": 2083,
+      "sha256": "b94c859f09d720b5dbc4649c230b3ebd7ba532c1d75430f7dc1864a245250283"
+    },
+    {
+      "path": "report-recommendations.mjs",
+      "bytes": 4683,
+      "sha256": "80a2146d6f1dd873cec654abdbb2ad70e27fbfa3c658d5e00c1e2ea4385767c9"
+    },
+    {
+      "path": "sales-departments.mjs",
+      "bytes": 1864,
+      "sha256": "9c510e5797f8dbbf3c412271ee47bcf8c19b34b3623c5f700a5d855e6062cf1d"
+    },
+    {
+      "path": "segment-sync.mjs",
+      "bytes": 4292,
+      "sha256": "9894caf21886adb45ddae44a0bb056a39226a5e43d02dc4d09e42e3856f0bd29"
+    },
+    {
+      "path": "server.js",
+      "bytes": 55560,
+      "sha256": "d58b1f9a73a9d6d0e037eb42a43aa4c799b86d37d4c18a09a5ec70959fd10879"
+    },
+    {
+      "path": "snapshot-history.py",
+      "bytes": 2089,
+      "sha256": "413e43acc4428292630dd87d064df81f19902e21711b38a97899ad347cad3280"
+    },
+    {
+      "path": "taxonomy-data.js",
+      "bytes": 52288,
+      "sha256": "0cbac4e40c6c5b201d599e744731e542b213fee5bfb6da4a547326695df3ca23"
+    },
+    {
+      "path": "unified-admin.mjs",
+      "bytes": 4360,
+      "sha256": "38478535dbd2cbcb1899b4df131cee9a9ce36d0b3a470189e2bbb45c61a509fc"
+    }
+  ]
+}

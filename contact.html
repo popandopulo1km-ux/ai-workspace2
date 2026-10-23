@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Паспорт контакта</title>
+  <script src="https://api.bitrix24.com/api/v1/"></script>
+  <script src="/taxonomy-data.js?v=structure-20260917"></script>
+  <script src="/parent-ui.js"></script>
+  <script src="/holding-ui.js"></script>
+  <script src="/extended-catalog.js?v=structure-20260917"></script>
+  <script src="/extended-info.js?v=path-bold-20261014"></script>
+  <script src="/group-commercial.js"></script>
+  <style>
+    :root { font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color: #263238; background: #eef3f6; }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body { padding: 8px; }
+    button, input, textarea { font: inherit; }
+    button { border: 0; border-radius: 9px; padding: 10px 15px; background: #1598c6; color: #fff; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #e7eef2; color: #315264; }
+    button.danger { border: 1px solid #e8c9c4; background: #fff7f6; color: #a44739; }
+    button:disabled { opacity: .55; cursor: default; }
+    a { color: #087ca7; text-decoration: none; }
+    .shell { width: 100%; margin: 0; }
+    html.panel-mode, html.panel-mode body { min-height: 100%; }
+    html.panel-mode body {
+      min-height: 100vh;
+      padding: 18px clamp(16px, 1.5vw, 24px) 22px;
+      background: #e9f0f4;
+    }
+    html.panel-mode .shell {
+      width: min(100%, 1680px);
+      min-height: calc(100vh - 40px);
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #d4e0e6;
+      border-radius: 18px;
+      background: #f4f7f9;
+      box-shadow: 0 10px 32px rgba(31, 67, 86, .10);
+    }
+
+    .prototype { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; padding: 11px 14px; border: 1px solid #efc36f; border-radius: 11px; background: #fff8e8; color: #7b5919; font-size: 13px; }
+    .prototype nav { display: flex; gap: 8px; flex: 0 0 auto; }
+    .prototype a { padding: 7px 10px; border-radius: 8px; background: #fff; color: #6d531f; font-weight: 700; }
+    header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+    h1 { margin: 0; color: #123e5a; font-size: 24px; }
+    .subtitle { margin-top: 4px; color: #6b7c87; }
+    .contact-meta { display: flex; flex-wrap: wrap; gap: 9px 16px; margin-top: 11px; color: #49616d; font-size: 13px; font-weight: 650; }
+    .header-side { display: grid; justify-items: end; gap: 9px; }
+    .badge { padding: 7px 11px; border-radius: 999px; background: #e2f4fb; color: #0a6f94; font-size: 12px; font-weight: 750; }
+    .passport-progress { display: grid; min-width: 250px; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 16px; align-items: center; padding: 9px 12px; border: 1px solid #d8e4e9; border-radius: 11px; background: #fff; }
+    .passport-progress-copy { min-width: 0; }
+    .passport-progress-label { color: #7a8992; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .03em; }
+    .passport-progress-value { margin-top: 3px; color: #173e55; font-size: 13px; font-weight: 800; }
+    .passport-progress-percent { color: #123e5a; font-size: 18px; font-weight: 850; white-space: nowrap; }
+    .passport-progress-percent small {display:block;color:#70838d;font-size:10px;font-weight:500;line-height:1.5;white-space:normal;}
+    .passport-progress-percent small:nth-of-type(2){margin-top:5px;}
+    .passport-progress-steps { display: flex; grid-column: 1 / -1; gap: 12px; }
+    .passport-progress-step { display: flex; width: 16px; flex-direction: column; align-items: center; gap: 2px; color: #aab6bc; font-size: 9px; line-height: 1; font-weight: 800; }
+    .passport-progress-step.active { color: #294b5b; }
+    .passport-progress-dot { width: 8px; height: 8px; border-radius: 50%; background: #d4dde2; }
+    .passport-progress-step.affiliation.active .passport-progress-dot { background: #6b70c8; }
+    .passport-progress-step.specialization.active .passport-progress-dot { background: #2b8ccc; }
+    .passport-progress-step.brands.active .passport-progress-dot { background: #27a46b; }
+    .header-actions, .footer-actions { display: flex; gap: 8px; }
+    .notice { display: none; margin-bottom: 14px; padding: 12px 14px; border-radius: 10px; }
+    .notice.show { display: block; }
+    .notice.success { background: #eaf8ef; color: #237a42; }
+    .notice.error { background: #fff0ee; color: #a53a2a; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { min-width: 0; padding: 18px; border: 1px solid #dfe7eb; border-radius: 14px; background: #fff; box-shadow: 0 5px 18px rgba(37, 76, 96, .055); }
+    .card.full { grid-column: 1 / -1; }
+    .card h2 { margin: 0 0 6px; color: #173e55; font-size: 17px; }
+    .hint { margin: 0 0 13px; color: #7a8992; font-size: 13px; line-height: 1.4; }
+    .choices { display: flex; flex-wrap: wrap; gap: 9px; }
+    label.choice { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #ccd9df; border-radius: 10px; background: #fbfdfe; cursor: pointer; }
+    label.choice:has(input:checked) { border-color: #22a8d6; background: #eaf8fd; color: #075d7c; }
+    label.choice:has(input:disabled) { border-color: #a9c3cf; background: #f5fafc; color: #173e55; cursor: default; font-weight: 700; }
+    label.choice:has(input:checked:disabled) { border-color: #1598c6; background: #e5f6fc; color: #07506b; }
+    label.choice input:disabled { opacity: 1; }
+    input { accent-color: #1598c6; }
+    .segment-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .segment-value { display: inline-flex; min-height: 42px; align-items: center; padding: 10px 14px; border: 1px solid #22a8d6; border-radius: 10px; background: #eaf8fd; color: #075d7c; font-weight: 750; }
+    .classification { display: flex; align-items: center; gap: 8px; padding-left: 14px; border-left: 1px solid #e1e9ed; }
+    .classification span { color: #7a8992; font-size: 12px; }
+    .classification strong { color: #d00000; }
+    .path { margin-top: 12px; padding-top: 10px; border-top: 1px solid #e6edef; color: #60737d; font-size: 12px; font-weight: 600; }
+    .field-label { display: block; margin-top: 14px; color: #173e55; font-size: 13px; font-weight: 750; }
+    textarea { display: block; width: 100%; min-height: 78px; margin-top: 7px; padding: 10px 12px; border: 1px solid #ccd9df; border-radius: 10px; background: #fbfdfe; color: #263238; line-height: 1.4; resize: vertical; }
+    textarea:focus, .search-input:focus { border-color: #22a8d6; box-shadow: 0 0 0 3px rgba(34, 168, 214, .12); outline: none; }
+    textarea:disabled { background: #f4f7f8; color: #344b57; opacity: 1; -webkit-text-fill-color: #344b57; cursor: default; }
+    .commercial { display: flex; flex-direction: column; align-self: start; }
+    .commercial-primary { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #e1e9ed; border-bottom: 1px solid #e1e9ed; }
+    .commercial-cell { display: flex; min-height: 82px; flex-direction: column; justify-content: center; padding: 13px 14px; }
+    .commercial-cell:first-child { padding-left: 0; }
+    .commercial-cell + .commercial-cell { border-left: 1px solid #e1e9ed; }
+    .metric-label { color: #7a8992; font-size: 12px; }
+    .money { margin-top: 6px; color: #123e5a; font-size: 25px; font-weight: 850; }
+    .commercial-meta { display: grid; flex: 1; grid-template-columns: .75fr 1.25fr 1fr; }
+    .metric { display: flex; min-height: 84px; flex-direction: column; justify-content: center; padding: 14px; }
+    .metric:first-child { padding-left: 0; }
+    .metric:last-child { padding-right: 0; }
+    .metric + .metric { border-left: 1px solid #e1e9ed; }
+    .metric strong { margin-top: 4px; color: #263238; font-size: 14px; overflow-wrap: anywhere; }
+    .system-groups { display: grid; gap: 12px; }
+    .system-group { padding: 14px; border: 1px solid #dfe7eb; border-radius: 11px; background: #f8fbfc; }
+    .system-group h3 { margin: 0 0 9px; color: #173e55; font-size: 14px; }
+    .taxonomy-stack { display: grid; grid-column: 1 / -1; gap: 14px; }
+    .system-passport { overflow: hidden; padding: 0; border-color: #cbdce4; }
+    .system-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 17px 18px; border-bottom: 1px solid #dfe7eb; background: #f2f9fc; }
+    .system-head small { display: block; margin-bottom: 3px; color: #7a8992; }
+    .system-head h2 { margin: 0; font-size: 19px; }
+    .system-head span { color: #7a8992; font-size: 12px; }
+    .levels { padding: 0 18px 18px; }
+    .level { padding-top: 16px; }
+    .level + .level { margin-top: 16px; border-top: 1px solid #dfe7eb; }
+    .level h3 { margin: 0 0 5px; color: #173e55; font-size: 15px; }
+    .taxonomy-groups { display: grid; gap: 10px; }
+    .taxonomy-group { padding: 10px 11px; border: 1px solid #e3eaee; border-radius: 9px; background: #fff; }
+    .taxonomy-group-title { margin-bottom: 8px; color: #526b77; font-size: 11px; font-weight: 750; }
+    .empty { padding: 14px; border: 1px dashed #ccd9df; border-radius: 9px; color: #71808a; text-align: center; }
+    .companies { display: grid; gap: 10px; }
+    .company { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(320px, 1.4fr) auto; gap: 14px; align-items: stretch; padding: 13px; border: 1px solid #e0e8ec; border-radius: 11px; background: #f8fbfc; }
+    .company-info { min-width: 0; padding: 5px 0; }
+    .company-title { color: #173e55; font-weight: 800; overflow-wrap: anywhere; }
+    .company-sub { margin-top: 5px; color: #7a8992; font-size: 12px; }
+    .company .field-label { margin: 0; }
+    .company textarea { min-height: 84px; margin-top: 5px; }
+    .company-actions { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: 8px; }
+    .linker-wrap { display: grid; gap: 9px; margin-top: 12px; }
+    .linker-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; background: #e7eef2; color: #315264; text-align: left; }
+    .linker { padding: 12px; border: 1px solid #d8e4e9; border-radius: 11px; background: #f8fbfc; }
+    .search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+    .search-input { height: 41px; min-width: 0; padding: 0 12px; border: 1px solid #c7d6dd; border-radius: 9px; background: #fff; color: #173e55; }
+    .search-results { display: grid; gap: 7px; margin-top: 10px; }
+    .search-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px; border: 1px solid #e0e8ec; border-radius: 9px; background: #fff; }
+    .search-result strong { display: block; color: #173e55; }
+    .search-result span { display: block; margin-top: 3px; color: #7a8992; font-size: 12px; }
+    .search-status { margin-top: 10px; color: #71808a; font-size: 13px; }
+    footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 2px 0 18px; }
+    .state { color: #71808a; font-size: 13px; }
+    @media (max-width: 900px) {
+      body { padding: 14px; }
+      .grid { grid-template-columns: 1fr; }
+      .card.full { grid-column: auto; }
+      .taxonomy-stack { grid-column: auto; }
+      .company { grid-template-columns: 1fr; }
+      .company-actions { flex-direction: row; align-items: center; }
+      .passport-progress { width: 100%; min-width: 0; }
+    }
+    .shell button:disabled{background:#e7eef2!important;color:#91a4ae!important;border-color:#e7eef2!important;opacity:1!important;cursor:not-allowed;box-shadow:none!important}
+    .passport-progress{display:grid;grid-template-columns:minmax(130px,1fr) auto;align-items:center;gap:16px;min-width:300px;max-width:380px}
+    .passport-progress-left{display:flex;flex-direction:column;justify-content:center;gap:10px;min-width:0}
+    .passport-progress-copy{padding:0;border:0}
+    .passport-progress-percent{white-space:normal;line-height:1.4;align-self:center;text-align:center}
+    .passport-progress-steps{padding:0}
+    .wm-overview-columns .wm-commerce-group>summary{padding:8px 12px;gap:8px}
+    .wm-overview-columns .wm-commerce-group>summary h2{font-size:13px;line-height:1.25}
+    .wm-overview-columns .wm-commerce-group-body{padding:0 12px 6px}
+    .wm-overview-columns .wm-commerce-group p{font-size:10px;line-height:1.2;margin:2px 0 5px}
+    .wm-overview-columns .wm-group-metric{padding:5px 9px}
+    .wm-overview-columns .wm-group-metric span{font-size:11px;line-height:1.2}
+    .wm-overview-columns .wm-group-metric strong{font-size:16px;line-height:1.2;margin-top:3px}
+    .wm-overview-columns .wm-group-metric:nth-child(n+3) strong{font-size:14px}
+    .wm-overview-columns .wm-group-metric small{font-size:9px;line-height:1.2;margin-top:3px}
+    .wm-overview-columns .wm-group-farmers{margin-top:4px}
+    .wm-overview-columns .wm-group-farmers summary{font-size:11px;line-height:1.2;padding:3px 0}
+    .wm-overview-columns .wm-group-farmers summary::after{font-size:14px}
+    .wm-overview-columns .wm-commerce-group .wm-group-note{font-size:9px;line-height:1.2;margin:4px 0 0}
+    .wm-overview-columns .wm-group-person{font-size:11px;padding:6px 0;gap:8px}
+    .wm-overview-columns .wm-group-person small{font-size:10px}
+    @media(min-width:761px){
+      .wm-overview-columns{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto;gap:14px;align-items:stretch!important}
+      .wm-overview-columns>.wm-overview-stack{display:contents!important}
+      .wm-overview-stack:first-child>:nth-child(1){grid-column:1;grid-row:1}
+      .wm-overview-stack:first-child>:nth-child(2){grid-column:1;grid-row:2}
+      .wm-overview-stack:first-child>:nth-child(3){grid-column:1;grid-row:3}
+      .wm-overview-stack:last-child>:nth-child(1){grid-column:2;grid-row:1}
+      .wm-overview-stack:last-child>.wm-commerce-group{grid-column:2;grid-row:2 / 4;align-self:start!important}
+      .wm-overview-stack:last-child>.wm-commerce-group[open]{align-self:stretch!important;contain:size;min-height:0;overflow:auto;overscroll-behavior:contain}
+    }
+    @media(max-width:760px){html.panel-mode body{padding:10px}html.panel-mode .shell{min-height:calc(100vh - 20px);padding:14px;border-radius:14px}html.panel-mode header{flex-wrap:wrap}html.panel-mode .header-side{width:100%}}
+  </style>
+<link rel="stylesheet" href="/purchase-summary.css?v=layout-20260917"><script type="module" src="/purchase-summary.mjs?v=period-audit-20261020"></script></head>
+<body>
+  <main class="shell">
+    <header>
+      <div><h1 id="title">Паспорт контакта</h1><div id="contact-meta" class="contact-meta"></div></div>
+      <div id="passport-progress" class="passport-progress" aria-live="polite"></div>
+      <div class="header-side"><span class="badge">Бета-тест</span><div class="header-actions"><button class="secondary" data-edit disabled>Редактировать</button><button data-save disabled>Сохранить</button></div></div>
+    </header>
+    <div id="notice" class="notice"></div>
+    <section id="form" class="grid"></section>
+    <footer><span id="state" class="state">Загрузка…</span><div class="footer-actions"><button class="secondary" data-edit disabled>Редактировать</button><button data-save disabled>Сохранить</button></div></footer>
+  </main>
+  <script>
+    const baseModel = {
+      objects: { title: "Виды объектов", hint: "Выберите объекты, с которыми работает контакт.", values: [["izhs", "ИЖС"], ["mkd", "МКД"]] },
+      contours: { title: "Контур работ", hint: "С этого поля начинается зависимая часть паспорта.", values: [["internal", "Внутренние системы"], ["external", "Наружные сети"]] },
+      works: { title: "Виды выполняемых работ", hint: "Можно выбрать несколько фактических компетенций контакта.", values: [["installation", "Монтаж"], ["commissioning", "Пусконаладочные работы"], ["repair", "Ремонт"], ["putting_into_operation", "Ввод в эксплуатацию"], ["technical_solutions", "Разработка и предоставление технических решений"]] },
+    };
+    const contourLabels = { internal: "Внутренние системы", external: "Наружные сети" };
+    const paths = Array.isArray(window.PASSPORT_TAXONOMY?.paths) ? window.PASSPORT_TAXONOMY.paths : [];
+    const form = document.querySelector("#form");
+    const stateLabel = document.querySelector("#state");
+    const notice = document.querySelector("#notice");
+    const progressElement = document.querySelector("#passport-progress");
+    const parentRelation=createPassportParent({changed:()=>{saveDraft();stateLabel.textContent='Есть несохранённые изменения';}});
+    const extendedInfo=createPassportExtendedInfo({changed:()=>{saveDraft();stateLabel.textContent='Есть несохранённые изменения';window.passportPurchaseRelationship=JSON.stringify(passport.relationship);window.passportPurchaseSnapshot={isInstaller:passport.segment.isInstaller,selections:structuredClone(selections),answers:extendedInfo.snapshot().answers};window.dispatchEvent(new Event("passport-purchase-change"));}});
+    const editButtons = [...document.querySelectorAll("[data-edit]")];
+    const saveButtons = [...document.querySelectorAll("[data-save]")];
+    const params = new URLSearchParams(location.search);
+    const placementCode=params.get('placement')||params.get('PLACEMENT')||'';
+    document.documentElement.classList.toggle('panel-mode',params.get('panelMode')==='1'||placementCode==='CRM_CONTACT_DETAIL_ACTIVITY');
+    let placementOptions={}; try { placementOptions=JSON.parse(params.get('placement_options')||params.get('PLACEMENT_OPTIONS')||'{}'); }catch{}
+    let contactId=Number(params.get('contactId')||placementOptions.ID||placementOptions.ENTITY_ID);
+    let draftKey = `wmPassportDraft:contact:${contactId}`;
+    const apiUrl = (suffix='') => `/api/passport/contact${suffix}${suffix.includes('?')?'&':'?'}contactId=${contactId}`;
+    let originals = new Map();
+    let passport;
+    let selections = {};
+    let editing = true;
+    let editLockedBlocks = false;
+    let saving = false;
+    let changingCompanyLink = false;
+    let role = "";
+    let companies = [];
+    let linkerExpanded = false;
+    let searchQuery = "";
+    let searchResults = [];
+    let searchLoading = false;
+    let searchCompleted = "";
+    let searchTimer = 0;
+    let searchRequest = 0;
+
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (symbol) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[symbol]));
+    const money = (value) => new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(Number(value) || 0);
+    const has = (group, id) => (selections[group] || []).includes(id);
+    function toggle(group, id, checked) {
+      const values = new Set(selections[group] || []);
+      checked ? values.add(id) : values.delete(id);
+      selections[group] = [...values];
+    }
+    function showNotice(text, kind = "error") { notice.textContent = text; notice.className = `notice show ${kind}`; }
+    function clearNotice() { notice.textContent = ""; notice.className = "notice"; }
+    function snapshot() { return { baseRevision:passport.baseRevision,selections, role, relationship:parentRelation.snapshot(), extendedInfo:extendedInfo.snapshot(), companyFeatures: companies.map((item) => ({ id: item.id, feature: item.feature, original: originals.get(item.id) ?? item.feature })) }; }
+    function saveDraft() { if (editing) {try{localStorage.setItem(draftKey, JSON.stringify(snapshot()));}catch{showNotice('Не удалось сохранить резервный черновик в браузере. Не закрывайте страницу до сохранения.');}} }
+
+    // Compare editable business values, not revision tokens or relation labels.
+    function draftContent(value) {
+      const v=structuredClone(value||{});
+      delete v.baseRevision; delete v.baseFingerprint;
+      if(v.relationship){const h=v.relationship.head;v.relationship={role:v.relationship.role||null,head:h?{type:h.type,id:Number(h.id)}:null};}
+      if(v.extendedInfo){delete v.extendedInfo.revision;delete v.extendedInfo.activeQuestionIds;}
+      if(v.companyFeatures)v.companyFeatures=v.companyFeatures.map(x=>({id:Number(x.id),feature:x.feature||''}));
+      const stable=x=>Array.isArray(x)?x.map(stable).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(k=>[k,stable(x[k])])):x;
+      return JSON.stringify(stable(v));
+    }
+    function archiveDraft(raw) {
+      // Archive first; a storage failure must never destroy an unsaved edit.
+      localStorage.setItem(draftKey+':stale:'+Date.now(),raw);
+      localStorage.removeItem(draftKey);
+    }
+    function restoreDraft() {
+      try {
+        const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
+        if (!draft) return false;
+        if(draftContent(draft)===draftContent(snapshot())){archiveDraft(JSON.stringify(draft));return false;}
+        if(draft.baseRevision!==passport.baseRevision){
+          archiveDraft(JSON.stringify(draft));
+          showNotice('В браузере остались несохранённые изменения прежней версии. Они сохранены отдельно. Открыты актуальные данные паспорта; старые изменения их не заменили.','warning');
+          return false;
+        }
+        selections = { ...selections, ...(draft.selections || {}) };
+        role = draft.role ?? role;
+        parentRelation.restore(draft.relationship);
+        extendedInfo.load(draft.extendedInfo);
+        const features = new Map((draft.companyFeatures || []).map((item) => [Number(item.id), item.feature]));
+        companies.forEach((item) => { if (features.has(Number(item.id))) item.feature = features.get(Number(item.id)); });
+        editing=true;
+        editLockedBlocks=true;
+        return true;
+      } catch { showNotice('Не удалось обработать резервный черновик. Он оставлен в браузере без изменений.','warning'); return false; }
+    }
+    function rowsForSystem(systemId) {
+      if (systemId === "water_treatment" && !(selections.objects || []).includes("izhs")) return [];
+      let result = paths.filter((row) => row.systemId === systemId);
+      if (["heating", "water_treatment"].includes(systemId)) {
+        const objects = new Set(selections.objects || []);
+        result = result.filter((row) => row.objectId && objects.has(row.objectId));
+      }
+      return result;
+    }
+    function unique(rows, idField, labelField) {
+      const values = new Map();
+      rows.forEach((row) => { if (row[idField] && !values.has(row[idField])) values.set(row[idField], row[labelField]); });
+      return [...values].map(([id, label]) => ({ id, label }));
+    }
+    function systemsForContour(contourId) {
+      return unique(paths.filter((row) => row.contourId === contourId && (row.systemId !== "water_treatment" || (selections.objects || []).includes("izhs"))), "systemId", "systemLabel");
+    }
+    function systemContour(systemId) { return paths.find((row) => row.systemId === systemId)?.contourId || ""; }
+    function normalizeSelections() {
+      selections.objects = [...new Set((selections.objects || []).map(id=>id==='apartments'?'mkd':id))];
+      const contours = new Set(selections.contours || []);
+      selections.systems = (selections.systems || []).filter((id) => contours.has(systemContour(id)) && (id !== "water_treatment" || selections.objects.includes("izhs")));
+      const systems = new Set(selections.systems);
+      const validRows = [...systems].flatMap(rowsForSystem);
+      const validElements = new Set(validRows.map((row) => row.elementId));
+      selections.elements = (selections.elements || []).filter((id) => validElements.has(id));
+      selections.elements = [...new Set([...selections.elements, ...validRows.filter(row => row.skipElementSelection).map(row => row.elementId)])];
+      const elements = new Set(selections.elements);
+      const validTypes = new Set(validRows.filter((row) => elements.has(row.elementId)).map((row) => row.elementTypeId).filter(Boolean));
+      selections.elementTypes = (selections.elementTypes || []).filter((id) => validTypes.has(id));
+      selections.elementTypes = selections.elementTypes.filter(id => !paths.some(row => row.elementTypeId === id && row.parentElementTypeId && !selections.elementTypes.includes(row.parentElementTypeId)));
+      selections.productGroups ||= [];
+      selections.finalItems ||= [];
+    }
+    function choice(group, id, label, extra = "") {
+      if (!editing && !has(group, id)) return "";
+      return `<label class="choice"><input type="checkbox" data-group="${group}" value="${escapeHtml(id)}" ${has(group, id) ? "checked" : ""} ${editing ? "" : "disabled"} ${extra}><span>${escapeHtml(label)}</span></label>`;
+    }
+    function renderBase(name) {
+      const item = baseModel[name];
+      const content = item.values.map(([id, label]) => choice(name === "works" ? "workTypes" : name, id, label)).join("");
+      if (!editing && !content) return "";
+      return `<article class="card ${name === "works" ? "full" : ""}"><h2>${item.title}</h2><div class="choices">${content}</div></article>`;
+    }
+    function renderSystems() {
+      const blocks = (selections.contours || []).map((contourId) => {
+        const options = systemsForContour(contourId).map((item) => choice("systems", item.id, item.label)).join("");
+        return options ? `<section class="system-group"><h3>${contourLabels[contourId]}</h3><div class="choices">${options}</div></section>` : "";
+      }).join("");
+      return blocks ? `<article class="card full"><h2>Системы</h2><div class="system-groups">${blocks}</div></article>` : "";
+    }
+    function renderDetails() {
+      const cards = (selections.systems || []).map((systemId) => {
+        const rows = rowsForSystem(systemId);
+        const system = rows[0] || paths.find((row) => row.systemId === systemId);
+        if (!system) return "";
+        const elements = unique(rows, "elementId", "elementLabel").filter((item) => editing || has("elements", item.id));
+        const skipElementLevel = rows.length > 0 && rows.every(row => row.skipElementSelection);
+        const elementChoices = skipElementLevel ? "" : elements.map((item) => choice("elements", item.id, item.label, `data-element="${item.id}"`)).join("");
+        const typeGroups = elements.filter((item) => has("elements", item.id)).map((element) => {
+          const types = unique(rows.filter((row) => row.elementId === element.id && !row.parentElementTypeId), "elementTypeId", "elementTypeLabel").filter((item) => editing || has("elementTypes", item.id));
+          const options = types.map((item) => { const children = unique(rows.filter(row => row.parentElementTypeId === item.id), "elementTypeId", "elementTypeLabel"); return choice("elementTypes", item.id, item.label, `data-type="${item.id}"`) + (has("elementTypes", item.id) && children.length ? `<div class="choices coolant-options" style="flex-basis:100%;padding:10px 0 0 18px">${children.map(child => choice("elementTypes", child.id, child.label, `data-type="${child.id}"`)).join("")}</div>` : ""); }).join("");
+          return options ? `<section class="taxonomy-group">${skipElementLevel ? "" : `<div class="taxonomy-group-title">${escapeHtml(element.label)}</div>`}<div class="choices">${options}</div></section>` : "";
+        }).join("");
+        const levels = [
+          elementChoices ? `<section class="level"><h3>1. Элементы системы</h3><div class="choices">${elementChoices}</div></section>` : "",
+          typeGroups ? `<section class="level"><h3>${skipElementLevel ? "1" : "2"}. Виды элементов системы</h3><div class="taxonomy-groups">${typeGroups}</div></section>` : "",
+        ].join("");
+        return `<article class="card full system-passport"><div class="system-head"><div><small>${escapeHtml(system.contourLabel)}</small><h2>${escapeHtml(system.systemLabel)}</h2></div><span>${(system.systemId==='climate'||system.systemId==='sewerage')?'Специализация · элементы системы':'Специализация · 2 уровня'}</span></div><div class="levels">${levels || '<div class="level"><div class="empty">Нет выбранной детализации.</div></div>'}</div></article>`;
+      }).join("");
+      return cards ? `<section class="taxonomy-stack">${cards}</section>` : "";
+    }
+    function renderCommercial() {
+      const value = passport.commercial;
+      if(value.loading)return `<article class="card commercial"><h2>Коммерческие данные</h2><div class="commercial-primary"><div class="commercial-cell"><span class="metric-label">Сейчас в работе</span><strong class="money">Загрузка…</strong></div><div class="commercial-cell"><span class="metric-label">В реализации</span><strong class="money">Загрузка…</strong></div></div><div class="commercial-meta"><div class="metric"><span class="metric-label">Успешных счетов</span><strong>Загрузка…</strong></div><div class="metric"><span class="metric-label">Сумма успешных реализаций</span><strong>Загрузка…</strong></div><div class="metric"><span class="metric-label">Фермер</span><strong>${escapeHtml(value.farmer||'Временно недоступен')}</strong></div></div></article>`;
+      return `<article class="card commercial"><h2>Коммерческие данные</h2><div class="commercial-primary"><div class="commercial-cell"><span class="metric-label">Сейчас в работе</span><strong class="money">${value.salesPotentialUnavailable?'Временно недоступна':money(value.salesPotentialSum)}</strong></div><div class="commercial-cell"><span class="metric-label">В реализации</span><strong class="money">${value.realizationSummaryUnavailable?'Временно недоступна':money(value.inProgressRealizationsSum)}</strong></div></div><div class="commercial-meta"><div class="metric"><span class="metric-label">Успешных счетов</span><strong>${value.historyUnavailable?'Временно недоступно':new Intl.NumberFormat("ru-RU").format(value.successfulRealizationsCount)}</strong></div><div class="metric"><span class="metric-label">Сумма успешных реализаций</span><strong>${value.historyUnavailable?'Временно недоступна':money(value.successfulRealizationsSum)}</strong></div><div class="metric"><span class="metric-label">Фермер</span><strong>${escapeHtml(value.farmer || "не распределен")}</strong></div></div></article>`;
+    }
+    function renderCompanies() {
+      const content = companies.length ? companies.map((company) => {
+        const feature = editing || String(company.feature || "").trim() ? `<label class="field-label">Особенность компании<textarea data-company-feature="${company.id}" maxlength="3000" placeholder="Особенность не заполнена" ${editing ? "" : "disabled"}>${escapeHtml(company.feature || "")}</textarea></label>` : '<div class="empty">Особенность компании не заполнена</div>';
+        return `<section class="company"><div class="company-info"><a class="company-title" href="https://crm2.waterman-t.com/crm/company/details/${company.id}/" target="_blank" rel="noopener">${escapeHtml(company.title)}</a><div class="company-sub">ID ${company.id}</div><div class="company-sub">${escapeHtml(company.phone || "Телефон не заполнен")}</div></div>${feature}<div class="company-actions"><span class="badge">Связана</span>${editing ? `<button class="danger" type="button" data-unlink-company="${company.id}">Отвязать</button>` : ""}</div></section>`;
+      }).join("") : '<div class="empty">Связанных компаний пока нет.</div>';
+      const results = searchResults.map((company) => `<div class="search-result"><div><strong>${escapeHtml(company.title)}</strong><span>ID ${company.id} · ${escapeHtml(company.phone || "телефон не заполнен")}</span></div><button type="button" data-link-company="${company.id}" ${company.linkedToCurrentContact ? "disabled" : ""}>${company.linkedToCurrentContact ? "Уже связана" : "Привязать"}</button></div>`).join("");
+      const noResults = !searchLoading && searchCompleted === searchQuery.trim() && searchQuery.trim().length >= 2 && !searchResults.length;
+      const status = searchLoading ? '<div class="search-status">Поиск…</div>' : noResults ? '<div class="search-status">Подходящие компании не найдены.</div>' : "";
+      const linker = editing ? `<div class="linker-wrap"><button class="linker-toggle" type="button" data-toggle-linker>${linkerExpanded ? "Скрыть поиск компании" : "Найти и привязать компанию"}<span>${linkerExpanded ? "▲" : "▼"}</span></button>${linkerExpanded ? `<div class="linker"><label class="field-label" for="company-search" style="margin-top:0">Поиск и привязка компании</label><div class="search-row"><input id="company-search" class="search-input" type="search" autocomplete="off" maxlength="100" value="${escapeHtml(searchQuery)}" placeholder="Название, телефон или ID компании"><button type="button" data-run-search>Найти</button></div>${status}${results ? `<div class="search-results">${results}</div>` : ""}</div>` : ""}</div>` : "";
+      return `<article class="card full"><h2>Связанные компании</h2><div class="companies">${content}</div>${linker}</article>`;
+    }
+    function renderLastEdit(){const e=passport?.lastEdit;const label=e?('Последняя редакция: '+new Date(e.at).toLocaleString('ru-RU',{timeZone:'Asia/Tomsk'})+' (Томск) · '+(e.userName||'Автор не установлен')):'Последняя редакция: дата и автор ранее не зафиксированы';return '<div class="card" style="grid-column:1/-1;padding:12px 18px;font-size:13px;color:#546378" data-passport-last-edit>'+escapeHtml(label)+'</div>'; }
+    function render() {
+      normalizeSelections();
+      renderPassportProgress();
+      const coreTail = passport.commercial.coreTail || "Неидентифицирован";
+      const path = String(passport.segment.path || "").split(";").map((item) => item.trim()).filter(Boolean).join(" → ");
+      const segmentHtml = `<article class="card"><h2>Сегмент клиента</h2><div class="segment-summary"><div class="segment-value">${escapeHtml(passport.segment.value)}</div><div class="classification"><span>Классификация</span><strong>● ${escapeHtml(coreTail)}</strong></div></div>${path ? `<div class="path">Путь КА из 1С: ${escapeHtml(path)}</div>` : ""}<label class="field-label" for="contact-role">Роль контакта<textarea id="contact-role" maxlength="3000" placeholder="Зафиксируйте роль контакта" ${editing ? "" : "disabled"}>${escapeHtml(role)}</textarea></label></article>`;
+      const groupHtml=renderPassportCommercialGroup(passport.commercialGroup);
+      const affiliationEditing = editing && (!passport.progress?.blocks?.affiliation || editLockedBlocks);
+      let html = renderLastEdit()+parentRelation.html(affiliationEditing,saving);
+      html += groupHtml ? `<div class="wm-overview-columns"><div class="wm-overview-stack">${segmentHtml}${passport.segment.isInstaller?renderBase('objects')+renderBase('contours'):''}</div><div class="wm-overview-stack">${renderCommercial()}${groupHtml}</div></div>` : segmentHtml+renderCommercial()+(passport.segment.isInstaller?renderBase('objects')+renderBase('contours'):'');
+      if(passport.segment.isInstaller){
+      html += renderBase("works");
+      if ((selections.contours || []).length) html += renderSystems();
+      if ((selections.systems || []).length) html += renderDetails();
+      html += extendedInfo.html(selections,editing,saving);
+      }
+      html += renderCompanies();
+      form.innerHTML = html;window.passportPurchaseRelationship=JSON.stringify(passport.relationship);window.passportPurchaseSnapshot={isInstaller:passport.segment.isInstaller,selections:structuredClone(selections),answers:extendedInfo.snapshot().answers};window.dispatchEvent(new Event("passport-purchase-change"));
+      parentRelation.mounted();
+      form.querySelectorAll('input,textarea,button').forEach(el=>{if(saving)el.disabled=true;});
+      if(changingCompanyLink)form.querySelectorAll('[data-link-company],[data-unlink-company]').forEach(el=>el.disabled=true);
+      const hasLockedBlock = Boolean(passport.progress?.blocks?.affiliation || passport.progress?.blocks?.specialization || passport.progress?.blocks?.brands);
+      editButtons.forEach((button) => { button.disabled = saving || (editing && (!hasLockedBlock || editLockedBlocks)); });
+      saveButtons.forEach((button) => { button.disabled = !editing || saving; });
+    }
+    window.addEventListener('passport-purchase-change',()=>{if(passport)renderPassportProgress();});
+    function renderPassportProgress() {
+      const progress = passport?.progress || { status: "empty", completion: 0, blocks: {} };
+      const questionProgress=window.passportQuestionCompletion(selections,extendedInfo.snapshot().answers);
+      const labels = { empty: "Паспорт не заполнен", affiliation: "Заполнена аффилированность", specialization: "Заполнена специализация", spec_aff: "Заполнена спец. + афф.", full: "Паспорт заполнен" };
+      const step = (key, letter, title) => `<span class="passport-progress-step ${key} ${progress.blocks?.[key] ? "active" : ""}" title="${title}: ${progress.blocks?.[key] ? "заполнено" : "не заполнено"}"><span class="passport-progress-dot"></span><span>${letter}</span></span>`;
+      progressElement.innerHTML = `<div class="passport-progress-left"><div class="passport-progress-copy"><div class="passport-progress-label">Статус паспорта</div><div class="passport-progress-value">${labels[progress.status] || labels.empty}</div></div><div class="passport-progress-steps" aria-label="Заполнение блоков паспорта">${step("affiliation", "А", "Аффилированность")}${step("specialization", "С", "Специализация")}${step("brands", "Б", "Бренды")}</div></div><div class="passport-progress-percent"><small>Специализация</small>${String(Number(progress.completion || 0)).replace(".", ",")}%<small>ТГ и бренды</small><span data-question-percent>${questionProgress.percent===null?"—":String(questionProgress.percent).replace(".",",")+"%"}</span><small data-question-count>${questionProgress.total?questionProgress.completed+" из "+questionProgress.total+" вопросов":"Нет доступных вопросов"}</small></div>`;
+    }
+    async function runSearch() {
+      const query = searchQuery.trim();
+      if (query.length < 2) return;
+      const id = ++searchRequest;
+      searchLoading = true;
+      try {
+        const response = await fetch(apiUrl(`/companies/search?q=${encodeURIComponent(query)}`));
+        const body = await response.json();
+        if (!response.ok || !body.success) throw new Error(body.error?.message || "Ошибка поиска компаний.");
+        if (id !== searchRequest || query !== searchQuery.trim()) return;
+        searchResults = body.data || [];
+        searchCompleted = query;
+      } catch (error) { if (id === searchRequest) showNotice(error.message); }
+      finally {
+        if (id === searchRequest) {
+          searchLoading = false;
+          const active = document.querySelector('#company-search');
+          const focused = document.activeElement === active;
+          const start=active?.selectionStart,end=active?.selectionEnd;
+          render();
+          const next = document.querySelector("#company-search");
+          if (focused && next) { next.focus({ preventScroll: true }); next.setSelectionRange(start ?? next.value.length, end ?? next.value.length); }
+        }
+      }
+    }
+    async function changeCompanyLink(id,remove) {
+      if(!editing||saving||changingCompanyLink)return;
+      changingCompanyLink=true;saveDraft();render();showNotice(remove?'Отвязка компании…':'Привязка компании…','success');
+      try {
+        const response=await fetch(apiUrl(remove?'/companies/unlink':'/companies/link'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({companyId:id}),signal:AbortSignal.timeout(60000)});
+        const body=await response.json();
+        if(!response.ok||!body.success)throw new Error(body.error?.message||'Не удалось изменить связь.');
+        mergeCompanies(body.data.companies||[]);
+        searchResults=searchResults.map(item=>item.id===id?{...item,linkedToCurrentContact:!remove}:item);
+        saveDraft();showNotice(remove?'Связь удалена. Контакт и компания сохранены.':'Компания привязана к контакту. Связь сохранена.','success');
+      }catch(error){showNotice(['TimeoutError','AbortError'].includes(error.name)?'Не получено подтверждение связи за 60 секунд. Обновите список перед повторной попыткой; черновик сохранён.':error.message);}
+      finally{changingCompanyLink=false;render();}
+    }
+    async function linkCompany(id) {return changeCompanyLink(id,false);}
+    async function unlinkCompany(id) {
+      const company = companies.find((item) => item.id === id);
+      if (!company || !confirm(`Отвязать компанию «${company.title}» от контакта? Сами карточки удалены не будут.`)) return;
+      return changeCompanyLink(id,true);
+    }
+    form.addEventListener("change", (event) => {
+      if (!editing || saving || !event.target.matches("input[type=checkbox][data-group]")) return;
+      const input = event.target;
+      toggle(input.dataset.group, input.value, input.checked);
+      if (input.dataset.group === "systems" && !input.checked) {
+        const childRows = paths.filter((row) => row.systemId === input.value);
+        const elementIds = new Set(childRows.map((row) => row.elementId));
+        const typeIds = new Set(childRows.map((row) => row.elementTypeId));
+        selections.elements = (selections.elements || []).filter((id) => !elementIds.has(id));
+        selections.elementTypes = (selections.elementTypes || []).filter((id) => !typeIds.has(id));
+      }
+      if (input.dataset.group === "elements" && !input.checked) {
+        const typeIds = new Set(paths.filter((row) => row.elementId === input.value).map((row) => row.elementTypeId));
+        selections.elementTypes = (selections.elementTypes || []).filter((id) => !typeIds.has(id));
+      }
+      clearNotice(); render(); saveDraft(); stateLabel.textContent = "Есть несохранённые изменения";
+    });
+    form.addEventListener("input", (event) => {
+      if (!editing || saving) return;
+      if (event.target.id === "contact-role") role = event.target.value;
+      else if (event.target.dataset.companyFeature) {
+        const company = companies.find((item) => item.id === Number(event.target.dataset.companyFeature));
+        if (company) company.feature = event.target.value;
+      } else if (event.target.id === "company-search") {
+        searchQuery = event.target.value;
+        searchResults = [];
+        searchCompleted = "";
+        clearTimeout(searchTimer);
+        const requestId = ++searchRequest;
+        if (searchQuery.trim().length >= 2) searchTimer = setTimeout(() => { if (requestId === searchRequest) runSearch(); }, 700);
+        return;
+      } else return;
+      saveDraft(); stateLabel.textContent = "Есть несохранённые изменения";
+    });
+    form.addEventListener("keydown", (event) => { if (event.target.id === "company-search" && event.key === "Enter") { event.preventDefault(); clearTimeout(searchTimer); runSearch(); } });
+    form.addEventListener("click", (event) => {
+      if(!editing||saving)return;
+      if (event.target.closest("[data-toggle-linker]")) { linkerExpanded = !linkerExpanded; render(); return; }
+      if (event.target.closest("[data-run-search]")) { clearTimeout(searchTimer); runSearch(); return; }
+      const link = event.target.closest("[data-link-company]");
+      if (link) { link.disabled=true;linkCompany(Number(link.dataset.linkCompany)).catch(e=>{showNotice(e.message);render();}); return; }
+      const unlink = event.target.closest("[data-unlink-company]");
+      if (unlink) {unlink.disabled=true;unlinkCompany(Number(unlink.dataset.unlinkCompany)).catch(e=>{showNotice(e.message);render();});}
+    });
+    editButtons.forEach((button) => button.addEventListener("click", () => { if (saving || (editing && editLockedBlocks)) return; editing = true; editLockedBlocks = true; linkerExpanded = false; clearNotice(); render(); stateLabel.textContent = "Режим редактирования"; }));
+    saveButtons.forEach((button) => button.addEventListener("click", async () => {
+      if (!editing || saving) return;
+      const relationError=parentRelation.validate()||(passport.segment.isInstaller?extendedInfo.validate():null);if(relationError){showNotice(relationError);return;}
+      saveDraft(); saving = true; render(); stateLabel.textContent = "Сохранение…";
+      try {
+        const emptySpecialization=['objects','workTypes','contours','systems','elements','elementTypes','productGroups','finalItems'].every(k=>!(selections[k]||[]).length);
+        const confirmEmptyPassport=Boolean(passport.segment.isInstaller&&passport.hasSavedPassport&&emptySpecialization&&window.confirm('Вы вручную удалили все выбранные пункты паспорта. Сохранить пустые значения? Предыдущая версия останется в истории.'));
+        if(passport.segment.isInstaller&&passport.hasSavedPassport&&emptySpecialization&&!confirmEmptyPassport){stateLabel.textContent='Очистка отменена';return;}
+        const response = await fetch(apiUrl(), { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({...snapshot(),segmentKey:passport.segment.value,confirmEmptyPassport}) });
+        const body = await response.json();
+        if (!response.ok || !body.success) throw new Error(body.error?.message || "Не удалось сохранить паспорт.");
+        const groupChanged=passport.relationship?.original!==body.data.relationship?.original;
+        passport = {...passport,...body.data,contact:{...passport.contact,...body.data.contact}};
+        if(groupChanged)passport.commercialGroup=null;
+        selections = passport.selections; role = passport.contact.role; companies = passport.companies;
+        parentRelation.load(passport.relationship);
+        extendedInfo.load(passport.extendedInfo);
+        originals=new Map(companies.map(c=>[c.id,c.feature]));
+        editing = !passport.hasSavedPassport; editLockedBlocks = false; try{localStorage.removeItem(draftKey);}catch{} showNotice("Паспорт сохранён.", "success"); stateLabel.textContent = "Изменения сохранены";
+        refreshCommercial();
+      } catch (error) { showNotice(error.message); stateLabel.textContent = "Ошибка сохранения"; }
+      finally { saving = false; render(); }
+    }));
+    async function load() {
+      if(!Number.isSafeInteger(contactId)||contactId<=0)throw new Error('Не определён контакт. Откройте паспорт из карточки контакта Bitrix24.');
+      const response = await fetch(apiUrl()+'&core=1');
+      const body = await response.json();
+      if (!response.ok || !body.success) throw new Error(body.error?.message || "Не удалось загрузить модель.");
+      passport = body.data; selections = structuredClone(passport.selections); role = passport.contact.role || ""; companies = passport.companies || [];
+      window.passportHistoryCard={ref:'C_'+contactId,name:passport.contact.name};
+      parentRelation.load(passport.relationship);
+      extendedInfo.load(passport.extendedInfo);
+      originals=new Map(companies.map(c=>[c.id,c.feature]));
+      editing = !passport.hasSavedPassport;
+      editLockedBlocks = false;
+      const restored = restoreDraft();
+      document.querySelector("#title").textContent = `Паспорт · ${passport.contact.name}`;
+      document.querySelector("#contact-meta").innerHTML = `<span>${escapeHtml(passport.contact.post || "Должность не указана")}</span><span>${escapeHtml(passport.contact.phone || "Телефон не заполнен")}</span><span>ID ${passport.contact.id}</span>`;
+      render(); stateLabel.textContent = restored ? "Восстановлен локальный черновик" : editing ? "Первичное заполнение — режим редактирования" : "Паспорт открыт для просмотра";
+      refreshCommercial();
+    }
+    function refreshCommercial() {
+      const relation=JSON.stringify(passport.relationship);
+      const updateDisplay=()=>{
+        if(editing||saving){const card=form.querySelector('.commercial');if(card)card.outerHTML=renderCommercial();}
+        else render();
+      };
+      void fetch(apiUrl()+'&commercial=1').then(async response=>{
+        const refreshed=await response.json();
+        if(!response.ok||!refreshed.success)throw new Error('Commercial unavailable');
+        if(relation!==JSON.stringify(passport.relationship))return;
+        passport.commercial=refreshed.data.commercial;
+        passport.commercialGroup=refreshed.data.commercialGroup??null;
+        updateDisplay();
+      }).catch(()=>{
+        if(relation!==JSON.stringify(passport.relationship)||!passport.commercial?.loading)return;
+        passport.commercial={...passport.commercial,loading:false,historyUnavailable:true,salesPotentialUnavailable:true,realizationSummaryUnavailable:true};
+        updateDisplay();
+      });
+    }
+    function mergeCompanies(next) {
+      const unsaved=new Map(companies.map(c=>[c.id,c]));
+      companies=next.map(c=>{const old=unsaved.get(c.id);if(!originals.has(c.id))originals.set(c.id,c.feature);return old&&old.feature!==originals.get(c.id)?{...c,feature:old.feature}:c;});
+    }
+    window.addEventListener('beforeunload',saveDraft);
+    let started = false;
+    const start=()=>{
+      if (started) return;
+      started = true;
+      load().catch((error)=>{showNotice(error.message);stateLabel.textContent='Ошибка загрузки';});
+    };
+    // VibeCode opens the application inside an additional wrapper iframe. In that
+    // layout BX24.init may be delayed indefinitely, while placement_options is
+    // already present in the URL. Do not block loading on the SDK callback when
+    // the contact id is known.
+    if (contactId) start();
+    else if(window.BX24)BX24.init(()=>{try{const info=BX24.placement.info();contactId=Number(info.options?.ID||info.options?.ENTITY_ID);draftKey=`wmPassportDraft:contact:${contactId}`;}catch{}start();});
+    else start();
+  </script>
+  <link rel="stylesheet" href="/history.css?v=metrics-20260916">
+  <script src="/history.js?v=period-audit-20261020"></script>
+</body>
+</html>

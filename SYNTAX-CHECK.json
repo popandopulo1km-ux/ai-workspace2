@@ -1,0 +1,169 @@
+{
+  "note": "Node syntax only; no application startup or CRM writes. PHP runtime not tested.",
+  "results": [
+    {
+      "file": "admin-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "commercial-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "company-links.mjs",
+      "ok": true
+    },
+    {
+      "file": "comparison.mjs",
+      "ok": true
+    },
+    {
+      "file": "contact-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "current-groups.mjs",
+      "ok": true
+    },
+    {
+      "file": "excel-xlsx.mjs",
+      "ok": true
+    },
+    {
+      "file": "extended-catalog.js",
+      "ok": true
+    },
+    {
+      "file": "extended-info-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "extended-info.js",
+      "ok": true
+    },
+    {
+      "file": "group-comments.mjs",
+      "ok": true
+    },
+    {
+      "file": "group-commercial.js",
+      "ok": true
+    },
+    {
+      "file": "group-specialization-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "history-backend.mjs",
+      "ok": true
+    },
+    {
+      "file": "history.js",
+      "ok": true
+    },
+    {
+      "file": "holding-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "holding-ui.js",
+      "ok": true
+    },
+    {
+      "file": "interactive-app.js",
+      "ok": true
+    },
+    {
+      "file": "interactive-export.mjs",
+      "ok": true
+    },
+    {
+      "file": "interactive-periods.mjs",
+      "ok": true
+    },
+    {
+      "file": "interactive-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "parent-service.mjs",
+      "ok": true
+    },
+    {
+      "file": "parent-ui.js",
+      "ok": true
+    },
+    {
+      "file": "passport-completion.mjs",
+      "ok": true
+    },
+    {
+      "file": "passport-integrity.mjs",
+      "ok": true
+    },
+    {
+      "file": "passport-patterns.mjs",
+      "ok": true
+    },
+    {
+      "file": "passport-segment.mjs",
+      "ok": true
+    },
+    {
+      "file": "passport-snapshot.mjs",
+      "ok": true
+    },
+    {
+      "file": "passport-sync-check.mjs",
+      "ok": true
+    },
+    {
+      "file": "patterns-core.mjs",
+      "ok": true
+    },
+    {
+      "file": "potential-math.mjs",
+      "ok": true
+    },
+    {
+      "file": "purchase-summary.mjs",
+      "ok": true
+    },
+    {
+      "file": "report-boilers.mjs",
+      "ok": true
+    },
+    {
+      "file": "report-bridge.js",
+      "ok": true
+    },
+    {
+      "file": "report-data.mjs",
+      "ok": true
+    },
+    {
+      "file": "report-recommendations.mjs",
+      "ok": true
+    },
+    {
+      "file": "sales-departments.mjs",
+      "ok": true
+    },
+    {
+      "file": "segment-sync.mjs",
+      "ok": true
+    },
+    {
+      "file": "server.js",
+      "ok": true
+    },
+    {
+      "file": "taxonomy-data.js",
+      "ok": true
+    },
+    {
+      "file": "unified-admin.mjs",
+      "ok": true
+    }
+  ]
+}

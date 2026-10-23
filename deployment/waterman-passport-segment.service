@@ -1,0 +1,19 @@
+# /etc/systemd/system/waterman-passport-segment.service
+[Unit]
+Description=Waterman derived customer segment sync
+After=network-online.target
+[Service]
+Type=oneshot
+User=vibeapp
+Group=vibeapp
+WorkingDirectory=/opt/app
+ExecStart=/usr/bin/node /opt/app/segment-sync.mjs
+Nice=10
+CPUQuota=15%
+MemoryMax=192M
+TimeoutStartSec=3600
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/app/data/segment-sync
+[Install]
+WantedBy=multi-user.target

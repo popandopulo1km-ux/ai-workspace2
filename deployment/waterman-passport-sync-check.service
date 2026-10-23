@@ -1,0 +1,15 @@
+# /etc/systemd/system/waterman-passport-sync-check.service
+[Unit]
+Description=Check morning passport synchronization and notify daily checkup
+After=network-online.target
+[Service]
+Type=oneshot
+User=vibeapp
+WorkingDirectory=/opt/app
+ExecStart=/usr/bin/node /opt/app/passport-sync-check.mjs
+TimeoutStartSec=180
+MemoryMax=128M
+CPUQuota=15%
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/app/data/report-snapshot

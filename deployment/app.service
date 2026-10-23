@@ -1,0 +1,27 @@
+# /etc/systemd/system/app.service
+[Unit]
+Description=app
+After=network.target
+
+[Service]
+User=vibeapp
+Group=vibeapp
+WorkingDirectory=/opt/app
+# Environment values omitted from review export
+ExecStart=/bin/sh -c 'npm start'
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=90
+EnvironmentFile=-/opt/app/.env
+EnvironmentFile=-/opt/app/.vibe-platform.env
+NoNewPrivileges=yes
+ProtectSystem=full
+ProtectHome=yes
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target
+
+# /etc/systemd/system/app.service.d/passport-guard.conf
+[Service]
+# Environment values omitted from review export

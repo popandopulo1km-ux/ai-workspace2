@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Паспорт · Панель управления</title>
+  <style>
+    :root { color-scheme: light; --navy:#173e55; --text:#263238; --muted:#71828b; --cyan:#24a9d5; --line:#dfe8ec; --bg:#f1f6f8; --green:#198a4b; --red:#bd2d2d; --amber:#c98413; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:Inter,Segoe UI,Arial,sans-serif; }
+    button,input,select { font:inherit; }
+    button,a { -webkit-tap-highlight-color:transparent; }
+    .shell { width:min(1180px,calc(100% - 28px)); margin:0 auto; padding:22px 0 46px; }
+    .topbar { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin-bottom:18px; }
+    .eyebrow { margin-bottom:7px; color:#78909b; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    h1 { margin:0; color:var(--navy); font-size:28px; line-height:1.15; }
+    .subtitle { margin-top:7px; color:var(--muted); font-size:14px; }
+    .top-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; justify-content:flex-end; }
+    .grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); border-radius:14px; background:#fff; box-shadow:0 8px 24px rgba(36,70,88,.055); }
+    .section-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:18px 20px 0; }
+    h2 { margin:0; color:var(--navy); font-size:18px; }
+    .hint { margin:5px 0 0; color:var(--muted); font-size:12px; line-height:1.45; }
+    .metrics { grid-column:1/-1; display:grid; grid-template-columns:1.15fr repeat(3,1fr); overflow:hidden; }
+    .metric { min-height:124px; padding:20px; }
+    .metric + .metric { border-left:1px solid var(--line); }
+    .metric-label { min-height:32px; color:var(--muted); font-size:12px; font-weight:650; line-height:1.35; }
+    .metric-value { margin-top:9px; color:var(--navy); font-size:30px; font-weight:850; letter-spacing:-.03em; }
+    .metric-note { margin-top:5px; color:#84949b; font-size:11px; }
+    .metric.primary { background:linear-gradient(145deg,#f3fbfe,#fff); }
+    .metric.primary .metric-value { color:#087caa; }
+    .distributed-link { grid-column:span 7; min-height:260px; overflow:hidden; }
+    .open-list { display:flex; width:100%; height:100%; min-height:260px; padding:0; border:0; background:transparent; color:inherit; text-align:left; cursor:pointer; }
+    .open-list-main { flex:1; padding:22px; }
+    .open-list-icon { display:grid; width:76px; place-items:center; background:linear-gradient(180deg,#e9f9fe,#f8fdff); color:#138fb9; font-size:29px; font-weight:300; }
+    .open-list:hover .open-list-icon,.open-list:focus-visible .open-list-icon { background:#ddf5fc; }
+    .open-list:focus-visible { outline:3px solid rgba(36,169,213,.22); outline-offset:2px; }
+    .list-title { display:flex; align-items:center; gap:10px; color:var(--navy); font-size:21px; font-weight:850; }
+    .list-summary { margin-top:28px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .mini-stat { padding:13px; border:1px solid #e5edf0; border-radius:10px; background:#fbfdfe; }
+    .mini-stat strong { display:block; color:var(--navy); font-size:21px; }
+    .mini-stat span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
+    .progress { display:block; height:8px; margin-top:24px; overflow:hidden; border-radius:99px; background:#e8eff2; }
+    .progress span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#20add9,#138bb6); }
+    .progress-caption { display:flex; justify-content:space-between; margin-top:7px; color:#768891; font-size:11px; }
+    .top-three { grid-column:span 5; padding-bottom:14px; }
+    .leaders { display:grid; gap:4px; padding:13px 14px 0; }
+    .leader { display:grid; grid-template-columns:38px minmax(0,1fr) auto; align-items:center; gap:10px; padding:11px 8px; border-radius:10px; }
+    .leader:hover { background:#f7fafb; }
+    .rank { display:grid; width:31px; height:31px; place-items:center; border-radius:50%; background:#edf4f7; color:#526c78; font-size:12px; font-weight:850; }
+    .leader:first-child .rank { background:#fff1c8; color:#a96900; }
+    .leader-name { color:var(--navy); font-size:13px; font-weight:800; }
+    .leader-role { margin-top:3px; color:#8a989e; font-size:11px; }
+    .leader-count { color:#137fa6; font-size:21px; font-weight:850; text-align:right; }
+    .leader-count small { display:block; color:#8a989e; font-size:9px; font-weight:700; text-transform:uppercase; }
+    .detail { display:none; }
+    .detail.active { display:block; }
+    .dashboard.hidden { display:none; }
+    .detail-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; }
+    .back { display:inline-flex; align-items:center; gap:7px; padding:9px 12px; border:1px solid #cfdae0; border-radius:9px; background:#fff; color:#34515f; font-weight:750; cursor:pointer; }
+    .back:hover { background:#f7fafb; }
+    .detail-title { flex:1; }
+    .detail-title h1 { font-size:24px; }
+    .period-toolbar {display:flex;align-items:end;flex-wrap:wrap;gap:12px;padding:0 14px 14px;}
+    .period-field {display:grid;gap:5px;font-size:12px;color:var(--muted);}
+    .period-field input {width:165px;max-width:100%;}
+    .period-error {color:#b42318;font-size:12px;margin:0;}
+    .toolbar { display:grid; grid-template-columns:minmax(210px,1fr) repeat(3,minmax(165px,.7fr)); gap:10px; padding:14px; }
+    .bulkbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 14px 14px; }
+    .selection-info { margin-top:4px; color:#667b85; font-size:12px; }
+    .control { width:100%; height:40px; padding:0 12px; border:1px solid #ccd9df; border-radius:9px; background:#fff; color:#314d59; outline:none; }
+    .control:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(36,169,213,.12); }
+    .result-count { display:flex; align-items:center; padding:0 8px; color:#71838c; font-size:12px; white-space:nowrap; }
+    .table-wrap { overflow-x:hidden; border-top:1px solid var(--line); }
+    table { width:100%; border-collapse:collapse; table-layout:fixed; }
+    th { padding:10px 8px; background:#f8fafb; color:#7a8a92; font-size:9px; letter-spacing:.03em; line-height:1.25; text-align:left; text-transform:uppercase; overflow-wrap:anywhere; }
+    td { padding:11px 8px; border-top:1px solid #e8eef1; vertical-align:middle; font-size:11px; line-height:1.3; overflow-wrap:anywhere; }
+    th:nth-child(1),td:nth-child(1) { width:5%; text-align:center; }
+    th:nth-child(2),td:nth-child(2) { width:30%; }
+    th:nth-child(3),td:nth-child(3) { width:12%; font-size:9px; }
+    th:nth-child(4),td:nth-child(4) { width:11%; }
+    th:nth-child(5),td:nth-child(5) { width:16%; }
+    th:nth-child(6),td:nth-child(6) { width:11%; }
+    th:nth-child(7),td:nth-child(7) { width:15%; }
+    
+    .company-name { color:var(--navy); font-size:13px; font-weight:800; }
+    .company-id { margin-top:3px; color:#93a0a6; font-size:10px; }
+    .farmer { color:#425e6b; font-size:10px; font-weight:700; }
+    .status { display:inline-flex; max-width:100%; align-items:center; gap:5px; padding:5px 7px; border-radius:999px; font-size:9px; line-height:1.2; font-weight:800; white-space:normal; }
+    .status::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .status.filled { background:#e8f7ef; color:var(--green); }
+    .status.full { background:#e8f7ef; color:var(--green); }
+    .status.spec_aff { background:#edf5ff; color:#2175ad; }
+    .status.affiliation { background:#f0f3ff; color:#5a61b9; }
+    .status.empty { background:#fff0ed; color:#b64635; }
+    .passport-blocks { display:flex; align-items:flex-start; justify-content:flex-start; gap:7px; }
+    .passport-step-percent{font-size:10px;font-weight:750;white-space:nowrap;color:#264e62;margin-top:4px}.passport-blocks .passport-step:first-child{min-width:14px;width:14px}.passport-step { display:flex; min-width:36px; flex-direction:column; align-items:center; gap:2px; color:#aab6bc; font-size:8px; line-height:1; font-weight:800; }
+    .passport-step.on { color:#294b5b; }
+    .passport-dot { width:8px; height:8px; border-radius:50%; background:#d4dde2; }
+    .passport-dot.affiliation.on { background:#6b70c8; }
+    .passport-dot.specialization.on { background:#2b8ccc; }
+    .passport-dot.brands.on { background:#27a46b; }
+    .percent { color:#264e62; font-weight:800; white-space:nowrap; }
+    .date { color:#71838c; white-space:nowrap; }
+    .actions { display:flex; flex-direction:column; align-items:stretch; gap:5px; }
+    .actions .btn { width:100%; min-height:28px; padding:0 5px; font-size:9px; }
+    .btn { display:inline-flex; min-height:34px; align-items:center; justify-content:center; padding:0 11px; border:1px solid transparent; border-radius:8px; background:var(--cyan); color:#fff; font-size:11px; font-weight:800; text-decoration:none; cursor:pointer; white-space:nowrap; }
+    .btn:hover { filter:brightness(.96); }
+    .btn.secondary { border-color:#cfe2e9; background:#f3fafc; color:#177795; }
+    .btn.danger { border-color:#efc7c1; background:#fff6f4; color:#b13d32; }
+    .btn[disabled] { opacity:.42; cursor:not-allowed; }
+    .row-check { width:16px; height:16px; accent-color:var(--cyan); }
+    .empty-table { padding:38px 20px; color:#7a8a92; text-align:center; }
+    .denied { display:none; max-width:680px; margin:11vh auto 0; padding:42px; text-align:center; }
+    .denied.active { display:block; }
+    .denied-icon { display:grid; width:58px; height:58px; margin:0 auto 17px; place-items:center; border-radius:50%; background:#fff0ed; color:#bd4438; font-size:27px; }
+    .denied p { color:#6f8088; line-height:1.55; }
+    .modal-layer { position:fixed; inset:0; display:none; place-items:center; padding:20px; background:rgba(18,43,56,.48); z-index:10; }
+    .modal-layer.open { display:grid; }
+    .modal { width:min(470px,100%); padding:22px; border-radius:15px; background:#fff; box-shadow:0 24px 70px rgba(14,38,50,.27); }
+    .modal h2 { font-size:20px; }
+    .modal p { color:#657983; font-size:13px; line-height:1.55; }
+    .warning { padding:11px 12px; border-left:3px solid #db9731; border-radius:7px; background:#fff8ea; color:#79551d; font-size:12px; line-height:1.45; }
+    .modal-actions { display:flex; justify-content:flex-end; gap:9px; margin-top:19px; }
+    .toast { position:fixed; right:20px; bottom:20px; display:none; max-width:360px; padding:13px 16px; border-radius:10px; background:#173e55; color:#fff; box-shadow:0 12px 30px rgba(16,42,55,.25); font-size:12px; z-index:20; }
+    .toast.show { display:block; }
+    @media(max-width:850px){ .metrics{grid-template-columns:repeat(2,1fr)} .metric:nth-child(3){border-left:0;border-top:1px solid var(--line)} .metric:nth-child(4){border-top:1px solid var(--line)} .distributed-link,.top-three{grid-column:1/-1} .toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.result-count{justify-content:flex-end} }
+    @media(max-width:560px){ .shell{width:min(100% - 18px,1180px);padding-top:14px}.topbar{display:block}.top-actions{justify-content:flex-start;margin-top:12px}.metrics{grid-template-columns:1fr}.metric+.metric{border-left:0;border-top:1px solid var(--line)}.list-summary{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr}.result-count{justify-content:flex-start}.detail-head{align-items:flex-start}.detail-title h1{font-size:20px} }
+    .patterns{grid-column:1/-1;padding:22px}.patterns-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}.patterns h3{font-size:15px;color:#345667}.pattern-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-top:1px solid #e0e9ed;background:white;padding:15px 0;color:#234b60;cursor:pointer;font:inherit}.pattern-row>span:nth-child(2){flex:1;min-width:0}.pattern-row strong{font-size:14px}.pattern-row small{display:block;color:#72909c;font-size:11px;margin-top:5px}.pattern-row b{white-space:nowrap;font-size:15px}.pattern-row:hover{background:#f4fafc}@media(max-width:760px){.patterns-columns{grid-template-columns:1fr}}
+    .pattern-loss{display:flex;flex:0 0 auto;flex-direction:column;align-items:flex-end;text-align:right}
+    .pattern-loss small{font-size:10px;font-weight:500;margin:0 0 4px}
+    .pattern-loss strong{font-size:21px;font-weight:850;white-space:nowrap}
+    @media(min-width:761px){
+      .patterns-columns{column-gap:24px;row-gap:0;align-items:stretch}
+      .patterns-columns>section,.patterns-columns>section>div{display:contents}
+      .patterns-columns>section>h3{grid-row:1;align-self:center}
+      .patterns-columns>section:first-child>h3,#patterns-earlier>.pattern-row,#patterns-earlier>.hint{grid-column:1}
+      .patterns-columns>section:last-child>h3,#patterns-gaps>.pattern-row,#patterns-gaps>.hint{grid-column:2}
+      .patterns-columns .pattern-row[data-rank="0"]{grid-row:2}
+      .patterns-columns .pattern-row[data-rank="1"]{grid-row:3}
+      .patterns-columns .pattern-row[data-rank="2"]{grid-row:4}
+    }
+    @media(max-width:760px){.pattern-loss strong{font-size:18px}.pattern-row{gap:9px}.pattern-loss small{max-width:110px}}
+    th:nth-child(2),td:nth-child(2){width:26%}th:nth-child(3),td:nth-child(3){width:11%}th:nth-child(4),td:nth-child(4){width:10%}th:nth-child(5),td:nth-child(5){width:13%}th:nth-child(6),td:nth-child(6){width:10%;text-align:center}th:nth-child(7),td:nth-child(7){width:11%}th:nth-child(8),td:nth-child(8){width:14%}
+    .competitor-alert{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid #efb7ba;border-radius:50%;background:#fff0f1;color:#cc2433;font-size:20px;font-weight:900;line-height:1}.competitor-empty{color:#aab8bf}
+  
+ .patterns-columns{display:grid!important;align-items:start!important}.patterns-columns>section{display:block!important}.patterns-columns>section>div{display:block!important}.xp-expand{width:100%;margin-top:8px}
+ .patterns .pattern{display:flex;align-items:center;gap:12px;width:100%;min-height:155px;padding:15px 0;border:0;border-top:1px solid #e0e9ed;background:white;color:#234b60;text-align:left;font:inherit;cursor:pointer}.patterns .pattern:hover{background:#f3fafd}.patterns .content{flex:1;min-width:0}.patterns .pattern strong{font-size:14px}.patterns .pattern small{display:block;color:#678394;font-size:11px;line-height:1.5;margin-top:5px}.patterns .amount{text-align:right;white-space:nowrap}.patterns .amount strong{font-size:21px}.patterns .amount small{font-size:10px}.patterns .zero{min-height:65px;opacity:.65;cursor:default}
+ .xp-modal{position:fixed;inset:0;background:#173d5377;display:grid;place-items:center;padding:24px;z-index:100}.xp-modal[hidden]{display:none}.xp-modal .dialog{background:white;border-radius:15px;padding:24px;width:min(100%,1050px);max-height:90vh;overflow:auto}.xp-modal .head{display:flex;justify-content:space-between;gap:20px;align-items:center}.xp-modal .note{font-size:12px;color:#6a8291;line-height:1.5}.xp-modal input{width:100%;padding:10px;border:1px solid #c8dce7;border-radius:7px}.xp-modal table{width:100%;table-layout:auto;margin-top:16px}.xp-modal th,.xp-modal td{width:auto!important;padding:12px!important;text-align:left;border-bottom:1px solid #e0e9ef}.xp-modal th{background:#eef7fb;position:static}.xp-modal a{color:#007ba3}@media(max-width:760px){.patterns .amount strong{font-size:17px}.xp-modal{padding:8px}.xp-modal .dialog{padding:12px}}
+</style>
+</head>
+<body>
+  <main class="shell" id="app">
+    <section id="workspace">
+      <header class="topbar">
+        <div><div class="eyebrow">Быстрый доступ · Паспорт</div><h1>Панель управления паспортами</h1><div class="subtitle">Контроль заполнения паспортов по распределённым контрагентам</div></div>
+        <div class="top-actions"><button id="export-all" class="btn secondary" type="button">Экспорт всех заполненных паспортов</button></div>
+      </header>
+      <section id="dashboard" class="dashboard grid">
+        <article class="card metrics">
+          <div class="metric primary"><div class="metric-label">Всего распределённых карточек</div><div id="metric-distributed" class="metric-value">—</div><div id="metric-types" class="metric-note">Компании и контакты вместе</div></div>
+          <div class="metric"><div class="metric-label">Паспортов сохранено за последний день</div><div id="metric-day" class="metric-value">—</div><div class="metric-note">уникальные карточки</div></div>
+          <div class="metric"><div class="metric-label">Паспортов сохранено за последние 7 дней</div><div id="metric-week" class="metric-value">—</div><div class="metric-note">без повторного учёта одной карточки</div></div>
+          <div class="metric"><div class="metric-label">Паспортов сохранено за последние 30 дней</div><div id="metric-month" class="metric-value">—</div><div class="metric-note">уникальные карточки за период</div></div>
+        </article>
+        <article class="card distributed-link">
+          <button id="open-list" class="open-list" type="button">
+            <span class="open-list-main"><span class="list-title">Список распределённых КА</span><span class="hint">Компании и контакты с назначенным фермером, статус паспорта и действия по каждой карточке.</span><span class="list-summary"><span class="mini-stat"><strong id="summary-filled">—</strong><span>паспорт заполнен</span></span><span class="mini-stat"><strong id="summary-empty">—</strong><span>паспорт не заполнен</span></span><span class="mini-stat"><strong id="summary-percent">—</strong><span>общая готовность</span></span></span><span class="progress"><span id="summary-progress" style="width:0"></span></span><span class="progress-caption"><span id="summary-progress-filled">Заполнено —</span><span id="summary-progress-total">Всего —</span></span></span>
+            <span class="open-list-icon">→</span>
+          </button>
+        </article>
+        <article class="card top-three">
+          <div class="section-head"><div><h2>Топ‑3 за месяц</h2><p class="hint">Фермеры компаний и контактов с наибольшим количеством сохранённых паспортов за последние 30 дней.</p></div></div>
+          <div id="leaders" class="leaders"><div class="leader"><span class="rank">—</span><span><div class="leader-name">Загружаем данные…</div></span></div></div>
+        </article>
+        <article class="card patterns"><div style="display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap"><h2>Закономерности</h2><button class="btn" id="open-interactive-report">Интерактивный отчёт: клиенты и товары</button><label>Отдел <select id="patterns-department" aria-label="Отдел закономерностей" style="max-width:380px"><option value="0">Все отделы</option></select></label></div><p class="hint" id="patterns-period"></p><div class="patterns-columns"><section><h3>Снижение дохода</h3><div id="patterns-earlier"></div><button class="btn secondary xp-expand" data-expand="earlier" hidden></button></section><section><h3>Должны покупать, но не покупают</h3><div id="patterns-gaps"></div><button class="btn secondary xp-expand" data-expand="gaps" hidden></button></section></div><p class="hint" id="patterns-note"></p></article>
+      </section>
+      <section id="detail" class="detail">
+        <header class="detail-head"><button id="back" class="back" type="button">← К сводке</button><div class="detail-title"><h1>Список распределённых КА</h1><div class="subtitle">Компании и контакты, у которых заполнено поле «Фермер»</div></div></header>
+        <article class="card">
+          <div id="pattern-selection" hidden style="padding:16px"></div><div class="toolbar"><input id="search" class="control" type="search" placeholder="Название или ID контрагента"><select id="segment-filter" class="control"><option value="all">Все группы КА из 1С</option></select><select id="department-filter" class="control" aria-label="Отдел распределённых контрагентов"><option value="all">Все отделы</option></select><select id="farmer-filter" class="control"><option value="all">Все фермеры</option></select><select id="status-filter" class="control"><option value="all">Все статусы</option><option value="empty">Паспорт не заполнен</option><option value="affiliation">Заполнена аффилированность</option><option value="specialization">Заполнена специализация</option><option value="spec_aff">Заполнена спец. + афф.</option><option value="full">Паспорт заполнен</option></select></div>
+          <div class="period-toolbar"><label class="period-field" for="period-from">Период от<input id="period-from" class="control" type="date"></label><label class="period-field" for="period-to">Период до<input id="period-to" class="control" type="date"></label><p id="period-error" class="period-error" role="alert" hidden>Начало периода не может быть позже окончания.</p></div>
+          <div class="bulkbar"><div><div id="result-count" class="result-count"></div><div id="selection-info" class="selection-info">Выбрано заполненных паспортов: 0</div></div><button id="export-selected" class="btn secondary" type="button" disabled>Экспорт выбранных</button></div>
+          <div class="table-wrap"><table><thead><tr><th><input id="select-all" class="row-check" type="checkbox" aria-label="Выбрать все заполненные паспорта в списке"></th><th>Контрагент</th><th>Группа КА из 1С</th><th>Фермер</th><th>Статус паспорта</th><th>Есть инф. о бренде конкурентов</th><th>Последнее заполнение</th><th></th></tr></thead><tbody id="rows"></tbody></table><div id="empty-table" class="empty-table" hidden>По заданным фильтрам контрагентов не найдено.</div></div>
+        </article>
+      </section>
+    </section>
+  </main>
+  <div id="modal-layer" class="modal-layer" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal"><h2 id="modal-title">Сбросить паспорт?</h2><p>Вы действительно хотите сбросить записанные данные паспорта контрагента <strong id="modal-company"></strong>?</p><div class="warning">Будет очищена только классификационная часть паспорта. Особенность компании, роли связанных контактов, коммерческие данные, сегмент, путь КА и назначенный фермер останутся без изменений.</div><div class="modal-actions"><button id="cancel-reset" class="btn secondary" type="button">Нет, отменить</button><button id="confirm-reset" class="btn danger" type="button">Да, сбросить паспорт</button></div></div>
+  </div>
+  <div id="load-error" role="alert" hidden style="margin:16px;padding:16px;background:#fff0ed;color:#a02424"></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/report-bridge.js?v=20260921"></script>
+<div class="xp-modal" id="xp-modal" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="xp-list-title"><div class="head"><h2 id="xp-list-title"></h2><button class="btn" id="xp-close">Закрыть</button></div><p class="note" id="xp-list-note"></p><input id="xp-search" aria-label="Поиск в списке КА" placeholder="Название, ID или фермер"><p class="note status" id="xp-count"></p><table><thead><tr><th>Контрагент</th><th>Фермер</th></tr></thead><tbody id="xp-rows"></tbody></table></section></div>
+
+  <script>
+    let companies=[],patternData=null,patternKeys=null;
+    const dashboard=document.getElementById('dashboard'),detail=document.getElementById('detail'),rows=document.getElementById('rows'),emptyTable=document.getElementById('empty-table');
+    const departmentFilter=document.getElementById('department-filter');
+    const matchesDepartment=item=>departmentFilter.value==='all'||(item.departmentIds||[]).includes(Number(departmentFilter.value));
+    function fillFarmers(){const previous=farmerFilter.value;const farmers=[...new Map(companies.filter(matchesDepartment).map(item=>[String(item.farmerId),item.farmer])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'ru'));farmerFilter.innerHTML='<option value="all">Все фермеры</option>'+farmers.map(([id,name])=>`<option value="${id}">${escapeHtml(name)}</option>`).join('');farmerFilter.value=farmers.some(([id])=>id===previous)?previous:'all';}
+    const search=document.getElementById('search'),segmentFilter=document.getElementById('segment-filter'),statusFilter=document.getElementById('status-filter'),farmerFilter=document.getElementById('farmer-filter'),resultCount=document.getElementById('result-count'),selectionInfo=document.getElementById('selection-info'),selectAll=document.getElementById('select-all'),exportSelected=document.getElementById('export-selected');
+    const periodFrom=document.getElementById('period-from'),periodTo=document.getElementById('period-to'),periodError=document.getElementById('period-error');
+    const modalLayer=document.getElementById('modal-layer'),modalCompany=document.getElementById('modal-company'),toast=document.getElementById('toast');
+    let resetId=null; const selectedIds=new Set(); let visibleCompanies=[];
+    function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
+    function matchesPeriod(item,from,to){
+      if(!from&&!to)return true;
+      if(item.blocks?.specialization !== true)return false;
+      if(from&&to&&from>to)return false;
+      return (item.fillDays||[]).some(day=>(!from||day>=from)&&(!to||day<=to));
+    }
+    function renderRows(){
+      periodError.hidden=!(periodFrom.value&&periodTo.value&&periodFrom.value>periodTo.value);
+      const query=search.value.trim().toLocaleLowerCase('ru-RU');
+      visibleCompanies=companies.filter(item=>matchesDepartment(item)&&matchesPeriod(item,periodFrom.value,periodTo.value)&&(!patternKeys||patternKeys.has(item.key))&&(!query||item.name.toLocaleLowerCase('ru-RU').includes(query)||String(item.id).includes(query))&&(segmentFilter.value==='all'||item.segment===segmentFilter.value)&&(statusFilter.value==='all'||item.status===statusFilter.value)&&(farmerFilter.value==='all'||String(item.farmerId)===farmerFilter.value));
+      const labels={empty:'Паспорт не заполнен',affiliation:'Заполнена аффилированность',specialization:'Заполнена специализация',spec_aff:'Заполнена спец. + афф.',full:'Паспорт заполнен'};
+      rows.innerHTML=visibleCompanies.map(item=>`<tr data-entity-key="${item.key}"><td><input class="row-check" type="checkbox" data-select="${item.key}" aria-label="Выбрать ${escapeHtml(item.name)}" ${item.exportable?'':'disabled'} ${selectedIds.has(item.key)?'checked':''}></td><td><div class="company-name">${escapeHtml(item.name)}</div><div class="company-id">${item.entityType==='contact'?'Контакт':'Компания'} · ID ${item.id}</div></td><td>${escapeHtml(item.segment)}</td><td><span class="farmer">${escapeHtml(item.farmer)}</span></td><td><div class="passport-blocks" aria-label="${labels[item.status]||labels.empty}"><span class="passport-step ${item.blocks?.affiliation?'on':''}" title="А — аффилированность: ${item.blocks?.affiliation?'заполнено':'не заполнено'}"><span class="passport-dot affiliation ${item.blocks?.affiliation?'on':''}"></span><span>А</span></span><span class="passport-step ${item.blocks?.specialization?'on':''}" title="С — специализация: ${item.blocks?.specialization?'заполнено':'не заполнено'}"><span class="passport-dot specialization ${item.blocks?.specialization?'on':''}"></span><span>С</span><span class="passport-step-percent" title="Специализация">${String(Number(item.completion||0)).replace('.',',')}%</span></span><span class="passport-step ${item.blocks?.brands?'on':''}" title="Б — бренды: ${item.blocks?.brands?'заполнено':'не заполнено'}"><span class="passport-dot brands ${item.blocks?.brands?'on':''}"></span><span>Б</span><span class="passport-step-percent" title="ТГ и бренды: ${item.questions?.completed||0} из ${item.questions?.total||0} вопросов">${item.questions?.percent==null?'—':String(item.questions.percent).replace('.',',')+'%'}</span></span></div></td><td class="competitor-cell">${item.hasCompetitorBrandInfo?'<span class="competitor-alert" role="img" aria-label="Есть информация о бренде конкурентов" title="В активных ответах брендов заполнено Другое">!</span>':'<span class="competitor-empty">—</span>'}</td><td><span class="date">${formatDate(item.updated)}</span></td><td><div class="actions"><a class="btn secondary" href="${item.entityType==='contact'?'https://crm2.waterman-t.com/crm/contact/details/':'https://crm2.waterman-t.com/crm/company/details/'}${encodeURIComponent(item.id)}/" target="_blank" rel="noopener">Перейти в КА</a><button class="btn danger" type="button" data-reset="${item.key}" ${item.resettable?'':'disabled'}>Сбросить</button></div></td></tr>`).join('');
+      resultCount.textContent=`Показано: ${visibleCompanies.length}`; emptyTable.hidden=visibleCompanies.length>0;
+      const selectable=visibleCompanies.filter(item=>item.exportable);
+      selectAll.checked=selectable.length>0&&selectable.every(item=>selectedIds.has(item.key)); selectAll.indeterminate=!selectAll.checked&&selectable.some(item=>selectedIds.has(item.key));
+      selectionInfo.textContent=`Выбрано заполненных паспортов: ${selectedIds.size}`; exportSelected.disabled=selectedIds.size===0;
+    }
+    async function exportPassports(ids){
+      const button=ids?exportSelected:document.getElementById('export-all'); const original=button.textContent; button.disabled=true; button.textContent='Формируем Excel…';
+      try{const response=await fetch(adminUrl('/export'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({keys:ids||null})});if(!response.ok){const payload=await response.json().catch(()=>({}));throw new Error(payload?.error?.message||'Не удалось сформировать файл');}const blob=await response.blob();const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=ids?'Паспорта_выбранных_КА.xlsx':'Все_заполненные_паспорта.xlsx';document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);showToast(ids?`Экспортировано паспортов: ${ids.length}`:'Экспорт всех заполненных паспортов сформирован.');}catch(error){showToast(error.message);}finally{button.textContent=original;button.disabled=ids?selectedIds.size===0:false;}
+    }
+    function showDetail(){dashboard.classList.add('hidden');detail.classList.add('active');renderRows();window.scrollTo({top:0,behavior:'smooth'});}
+    function showDashboard(){detail.classList.remove('active');dashboard.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+    function closeModal(){modalLayer.classList.remove('open');resetId=null;}
+    function showToast(message){toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2600);}
+    document.getElementById('open-list').addEventListener('click',()=>{patternKeys=null;document.getElementById('pattern-selection').hidden=true;showDetail();});
+    document.getElementById('back').addEventListener('click',showDashboard);
+    departmentFilter.addEventListener('change',()=>{fillFarmers();selectedIds.clear();renderRows();});
+    [search,segmentFilter,statusFilter,farmerFilter,periodFrom,periodTo].forEach(control=>control.addEventListener(control===search?'input':'change',()=>{selectedIds.clear();renderRows();}));
+    rows.addEventListener('change',event=>{const checkbox=event.target.closest('[data-select]');if(!checkbox)return;const id=checkbox.dataset.select;checkbox.checked?selectedIds.add(id):selectedIds.delete(id);renderRows();});
+    rows.addEventListener('click',event=>{const button=event.target.closest('[data-reset]');if(!button)return;const company=companies.find(item=>item.key===button.dataset.reset);if(!company)return;resetId=company.key;modalCompany.textContent=company.name;modalLayer.classList.add('open');document.getElementById('cancel-reset').focus();});
+    selectAll.addEventListener('change',()=>{visibleCompanies.filter(item=>item.exportable).forEach(item=>selectAll.checked?selectedIds.add(item.key):selectedIds.delete(item.key));renderRows();});
+    document.getElementById('export-all').addEventListener('click',()=>exportPassports(null));
+    exportSelected.addEventListener('click',()=>exportPassports([...selectedIds]));
+    document.getElementById('cancel-reset').addEventListener('click',closeModal);
+    document.getElementById('confirm-reset').addEventListener('click',async()=>{const company=companies.find(item=>item.key===resetId);if(!company)return;const button=document.getElementById('confirm-reset');button.disabled=true;button.textContent='Сбрасываем…';try{const response=await fetch(adminUrl('/reset'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key:company.key})});const payload=await response.json().catch(()=>({}));if(!response.ok)throw new Error(payload?.error?.message||'Не удалось сбросить паспорт');company.status=company.blocks?.affiliation?'affiliation':'empty';company.blocks={affiliation:Boolean(company.blocks?.affiliation),specialization:false,brands:false};company.completion=0;company.exportable=false;company.resettable=false;company.updated=company.status==='empty'?'':company.updated;selectedIds.delete(company.key);closeModal();renderRows();renderSummary();showToast(`Паспорт «${company.name}» сброшен. Особенность компании и роли контактов сохранены.`);await loadOverview();}catch(error){showToast(error.message);}finally{button.disabled=false;button.textContent='Да, сбросить паспорт';}});
+    modalLayer.addEventListener('click',event=>{if(event.target===modalLayer)closeModal();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&modalLayer.classList.contains('open'))closeModal();});
+    function formatDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?escapeHtml(value):date.toLocaleString('ru-RU',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+    function renderSummary(stats){
+      const filled=stats?.filled??companies.filter(item=>item.blocks?.specialization===true).length,empty=stats?.empty??companies.filter(item=>item.blocks?.specialization!==true).length,total=filled+empty,percent=total?Math.round(filled*1000/total)/10:0;
+      document.getElementById('summary-filled').textContent=filled.toLocaleString('ru-RU');document.getElementById('summary-empty').textContent=empty.toLocaleString('ru-RU');document.getElementById('summary-percent').textContent=`${String(percent).replace('.',',')}%`;document.getElementById('summary-progress').style.width=`${percent}%`;document.getElementById('summary-progress-filled').textContent=`Заполнено ${filled.toLocaleString('ru-RU')}`;document.getElementById('summary-progress-total').textContent=`Всего ${total.toLocaleString('ru-RU')}`;
+    }
+    let patternsVersion=0;
+    document.getElementById('patterns-department').addEventListener('change',()=>loadPatterns());
+    async function loadPatterns(){
+      const version=++patternsVersion,department=document.getElementById('patterns-department').value;
+      document.getElementById('xp-modal').hidden=true;
+      for(const kind of ['earlier','gaps'])document.getElementById('patterns-'+kind).innerHTML='';
+      document.querySelectorAll('[data-expand]').forEach(b=>b.hidden=true);
+
+      document.getElementById('patterns-period').textContent='Загружаем закономерности…';
+      try{
+        const deadline=Date.now()+240000;
+        while(true){
+          const response=await fetch(adminUrl('/patterns')+'?department='+encodeURIComponent(department),{cache:'no-store'});const payload=await response.json();
+          if(!response.ok||!payload.success)throw new Error(payload.error?.message||'Не удалось загрузить закономерности');
+          if(version!==patternsVersion)return;
+          if(response.status!==202||!payload.pending){const select=document.getElementById('patterns-department');let options='<option value="0">Все отделы</option>';const visit=(parent,level)=>{for(const d of payload.data.departments.filter(d=>Number(d.parentId||0)===parent)){options+='<option value="'+Number(d.id)+'">'+'  '.repeat(level)+(level?'↳ ':'')+escapeHtml(d.name)+'</option>';visit(Number(d.id),level+1);}};visit(0,0);select.innerHTML=options;select.value=department;renderPatterns(payload.data);break;}
+          if(Date.now()>=deadline)throw new Error('Расчёт закономерностей занимает больше времени. Повторите загрузку панели позже.');
+          await new Promise(resolve=>setTimeout(resolve,3000));
+        }
+      }
+      catch(error){if(version!==patternsVersion)return;document.getElementById('patterns-period').textContent=error.message;document.getElementById('patterns-note').textContent='Результаты не показаны, чтобы не выдавать отсутствие данных за отсутствие покупок.';}
+    }
+const renderExpandedPatterns=(()=>{
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=v=>new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(Number(v||0)/100);
+const decline=r=>r.priorIncome>0?(100*(r.priorIncome-r.currentIncome)/r.priorIncome).toLocaleString('ru-RU',{maximumFractionDigits:1})+'%':'—';
+let data,selected=[],expanded={earlier:false,gaps:false},trigger,selectedTurnover=null;
+function render(kind){const all=data[kind],rows=expanded[kind]?all:all.slice(0,3);document.getElementById('patterns-'+kind).innerHTML=rows.map((r,i)=>`<button class="pattern ${r.noPattern?'zero muted':''}" data-kind="${kind}" data-index="${i}" ${r.noPattern?'disabled':''}><span class="rank">${i+1}</span><span class="content"><strong>${esc(r.name)}</strong>${r.noPattern?'<small>Нет подтверждённых случаев</small>':kind==='earlier'?`<small>Доход раньше: ${money(r.priorIncome)}<br>Доход сейчас: ${money(r.currentIncome)}<br>Падение дохода: ${decline(r)}<br>Кол-во КА с падением: ${r.keys.length}</small>`:`<small>${r.keys.length} КА</small>`}${r.noPattern?'':'<small>Сформировать список паспортов →</small>'}</span>${r.noPattern?'':kind==='earlier'?`<span class="amount"><small>Упущенный доход</small><strong>${money(r.incomeDecline)}</strong></span>`:`<span class="amount"><small>Потенциальный упущенный доход</small><strong>${money(r.potentialIncome)}</strong></span>`}</button>`).join('');const b=document.querySelector(`[data-expand="${kind}"]`);b.textContent=expanded[kind]?'Свернуть до трёх ТГ':`Показать все ТГ (${all.length})`;b.hidden=false;b.setAttribute('aria-expanded',String(expanded[kind]));}
+function list(){const q=document.getElementById('xp-search').value.toLocaleLowerCase('ru-RU');const items=selected.filter(c=>(c.name+' '+c.farmer+' '+c.members.map(m=>m.name+' '+m.ref).join(' ')).toLocaleLowerCase('ru-RU').includes(q));document.getElementById('xp-count').textContent='Показано '+items.length+' из '+selected.length+' КА';document.querySelector('#xp-modal thead tr').innerHTML='<th>Контрагент</th><th>Фермер</th>'+(selectedTurnover?'<th style="text-align:right">Падение оборота, ₽</th>':'');document.getElementById('xp-rows').innerHTML=items.map(c=>'<tr><td>'+c.members.map(m=>{const match=/^(CO|C)_([1-9]\d*)$/.exec(m.ref);if(!match)return esc(m.name);return '<div><a href="https://crm2.waterman-t.com/crm/'+(match[1]==='CO'?'company':'contact')+'/details/'+match[2]+'/" target="_blank" rel="noopener" style="font-weight:'+(m.head?'700':'400')+'">'+esc(m.name)+'</a></div>';}).join('')+'</td><td>'+esc(c.farmer)+'</td>'+(selectedTurnover?'<td style="text-align:right;white-space:nowrap">'+money(selectedTurnover[c.key].decline)+'</td>':'')+'</tr>').join('');}
+function close(){document.getElementById('xp-modal').hidden=true;trigger?.focus();}
+document.addEventListener('click',e=>{const expand=e.target.closest('[data-expand]');if(expand){expanded[expand.dataset.expand]=!expanded[expand.dataset.expand];render(expand.dataset.expand);return;}const b=e.target.closest('[data-kind]');if(!b||b.disabled)return;trigger=b;const r=data[b.dataset.kind][Number(b.dataset.index)],keys=new Set(r.keys);selected=data.clients.filter(c=>keys.has(c.key));selectedTurnover=b.dataset.kind==='earlier'?r.turnoverByKey:null;document.getElementById('xp-list-title').textContent=r.name;document.getElementById('xp-list-note').textContent=(b.dataset.kind==='earlier'?'Снижение дохода':'Должны покупать, но не покупают')+' · '+r.keys.length+' КА'+(selectedTurnover?' · '+data.priorPeriodLabel+' → '+data.periodLabel:'');document.getElementById('xp-search').value='';list();document.getElementById('xp-modal').hidden=false;document.getElementById('xp-close').focus();});
+document.getElementById('xp-close').onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});document.getElementById('xp-search').oninput=list;
+return d=>{data=d;render('earlier');render('gaps');};})();
+ function renderPatterns(data){patternData=data;if(!data)return;document.getElementById('patterns-period').textContent='Сравнение: '+data.periodLabel+' / '+data.priorPeriodLabel;document.getElementById('patterns-note').textContent=data.note;renderExpandedPatterns(data);}
+    function renderLeaders(leaders){const target=document.getElementById('leaders');target.innerHTML=leaders.length?leaders.map((leader,index)=>`<div class="leader"><span class="rank">${index+1}</span><span><div class="leader-name">${escapeHtml(leader.name)}</div><div class="leader-role">за последние 30 дней</div></span><span class="leader-count">${leader.count}<small>паспортов</small></span></div>`).join(''):'<div class="leader"><span class="rank">—</span><span><div class="leader-name">Пока нет заполнений</div><div class="leader-role">Статистика ведётся с 28 августа 2026</div></span></div>';}
+    function fillFilters(){fillFarmers();const selected=segmentFilter.value;const segments=[...new Set(companies.map(item=>item.segment).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ru'));segmentFilter.innerHTML='<option value="all">Все группы КА из 1С</option>'+segments.map(name=>`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');segmentFilter.value=segments.includes(selected)?selected:'all';}
+    const adminUrl=(suffix='')=>'/api/admin'+suffix;
+    async function loadOverview(){
+      const errorBox=document.getElementById('load-error');
+      errorBox.hidden=true;
+      document.getElementById('export-all').disabled=true;
+      document.getElementById('open-list').disabled=true;
+      try{
+        const response=await fetch(adminUrl(),{cache:'no-store'});
+        const payload=await response.json().catch(()=>({}));
+        if(!response.ok||!payload.success)throw new Error(payload?.error?.message||'Не удалось загрузить общую панель');
+        companies=payload.data.companies||[];const departments=payload.data.departments||[];const selectedDepartment=departmentFilter.value;let departmentOptions='<option value="all">Все отделы</option>';const visitDepartment=(parent,level)=>{for(const d of departments.filter(d=>d.parentId===parent)){departmentOptions+='<option value="'+d.id+'">'+'  '.repeat(level)+(level?'↳ ':'')+escapeHtml(d.name)+'</option>';visitDepartment(d.id,level+1);}};visitDepartment(0,0);departmentFilter.innerHTML=departmentOptions;departmentFilter.value=departments.some(d=>String(d.id)===selectedDepartment)?selectedDepartment:'all';loadPatterns();
+        try{const opts=JSON.parse(new URLSearchParams(location.search).get('placement_options')||'{}');if(String(opts.URI||'').includes('interactive=1'))document.getElementById('open-interactive-report').click();}catch{}
+        const stats=payload.data.stats||{};
+        document.getElementById('metric-distributed').textContent=(stats.distributed||0).toLocaleString('ru-RU');
+        document.getElementById('metric-types').textContent=`Компании: ${stats.companyCount||0} · Контакты: ${stats.contactCount||0}`;
+        for(const period of ['day','week','month'])document.getElementById('metric-'+period).textContent=(stats[period]||0).toLocaleString('ru-RU');
+        fillFilters();renderSummary(stats);renderLeaders(stats.leaders||[]);renderRows();
+        // Direct link to the distributed list; uses the same authenticated overview.
+        try{const opts=JSON.parse(new URLSearchParams(location.search).get('placement_options')||'{}');if(new URL(String(opts.URI||location.href),location.origin).searchParams.get('list')==='1')showDetail();}catch{}
+        document.getElementById('export-all').disabled=false;
+        document.getElementById('open-list').disabled=false;
+      }catch(error){errorBox.hidden=false;errorBox.textContent=error.message;}
+    }
+    (window.wmReportBridgeReady||Promise.resolve(false)).then(connected=>{if(!connected)loadOverview();});
+  </script>
+<dialog id="interactive-report-dialog" style="width:96vw;max-width:1600px;height:92vh;padding:12px;border:1px solid #cbdde6;border-radius:12px"><button id="close-interactive-report" class="btn secondary">Закрыть отчёт</button><iframe id="interactive-report-frame" title="Интерактивный отчёт закономерностей" style="border:0;width:100%;height:calc(100% - 48px)"></iframe></dialog><script>document.getElementById('open-interactive-report').onclick=()=>{const f=document.getElementById('interactive-report-frame');if(!f.getAttribute('src'))f.src='/api/admin/interactive/view';document.getElementById('interactive-report-dialog').showModal();};document.getElementById('close-interactive-report').onclick=()=>document.getElementById('interactive-report-dialog').close();</script></body>
+</html>
